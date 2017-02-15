@@ -1,2 +1,3 @@
 # TextMining
-This is the base repo for the text mining and analysis project for Software Design, Spring 2017 at Olin College.
+
+This is the base repo for the text mining and analysis project for Software Design at Olin College.
