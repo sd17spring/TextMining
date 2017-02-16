@@ -3,6 +3,8 @@ import api_keys
 import pickle
 import re
 from pathlib import Path
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+analyzer = SentimentIntensityAnalyzer()
 
 
 def get_trump_tweets():
@@ -82,5 +84,7 @@ def sortFreqDict(freqdict):
 
 print("Hillary's Words: ")
 print_word_freqs(get_clinton_tweets())
+print(analyzer.polarity_scores(str(get_clinton_tweets())))
 print("Trump's Words: ")
 print_word_freqs(get_trump_tweets())
+print(analyzer.polarity_scores(str(get_trump_tweets())))
