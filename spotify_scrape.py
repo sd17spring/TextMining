@@ -1,8 +1,16 @@
+"""
+Uses the Spotify API, plus several Python libraries - Spotipy, a wrapper for the Spotify API,
+and Markovify, a library for Markov chains - to pull track names of a genre from Spotify,
+then use Markov chains to create random song names of a certain genre.
+
+@author: Matt Brucker
+"""
+
 import argparse
 import pickle
-import re
 from spotipy import Spotify, oauth2
 import markovify
+import os.path
 
 parser = argparse.ArgumentParser(description='Enter API Credentials')
 parser.add_argument('--id', help='Your client ID.')
@@ -23,45 +31,44 @@ def save_all_playlists():
     pickle.dump(all_lists, open('playlist_data.pickle', 'wb'))
 
 
-def get_all_playlists():
-    lists = pickle.load(open('playlist_data.pickle', 'rb'))
-    all_names = [play['name'] for play in lists if not re.match(play['name'],'Top')]
-    names_new = ' '.join(all_names)
-    text_model = markovify.Text(names_new)
+def save_track_list(genre):
+    genre_split = '+'.join(genre.split())  # Converts genre name into API-compatible string
+    tracks = sp.search("genre:" + genre_split, type='track', limit=50)
+    all_tracks = list()
+    total_tracks = 0
+    # Iterate until there's no more tracks, or we hit 10,000 tracks
+    while tracks['tracks']['next'] and total_tracks < 10000:
+        for track in tracks['tracks']['items']:
+            track_name = track['name'].lower()  # Keep everything lowercase for simplicity
 
-    print(text_model.make_sentence())
-    # keywords = dict()
-    # for playlist in lists:
-    #     keys = playlist['name'].split()
-    #     for key in keys:
-    #         if key not in keywords:
-    #             keywords[key] = 1
-    #         else:
-    #             keywords[key] += 1
-    # [print(key, ': ', keywords[key]) for key in keywords if keywords[key] > 40]
+            #  cuts off at hyphens - this is because a lot of tracks have "live" in their name, and we don't want that
+            cutoff_index = track_name.find('-')
+            if cutoff_index >= 0:
+                track_name = track_name[:cutoff_index]
+
+            # Add track name to our list of track names
+            all_tracks.append(track_name)
+        # Iterate to the next tracks
+        tracks = sp.next(tracks['tracks'])
+        total_tracks += 50
+    # Pickles the data to reduce the number of API calls
+    pickle_name = '_'.join(genre.lower().split()) + '.pickle'
+    pickle.dump(all_tracks, open(pickle_name, 'wb'))
 
 
-def get_new_releases():
-    res = sp.search('Indie', type='track')
-    print(res)
-    # res = sp.categories(limit=50)
-    # print (res)
-    # cat_id = [item['id'] for item in res['categories']['items'] if item['name'] == 'Indie'][0]
-    # play = sp.category_playlists(category_id=cat_id)
-    # new_list = play['playlists']['items'][0]
-    # num_lists = 0
-    # lists = sp.user_playlists('spotify')
-    # print(lists)
-    # while lists['next']:
-    #     num_lists += 50
-    #     lists = sp.next(lists)
-    # print(str(num_lists))
-    # [print(new_list[item]) for item in new_list]
-    # res = sp.search(q='weezer', type='artist', limit=20)
-    # print([artists for artists in res['artists']['items']])
+def get_all_tracks(genre):
+    file_name = '_'.join(genre.lower().split()) + '.pickle'
+    if not os.path.isfile(file_name):
+        save_track_list(genre)
+    tracks = pickle.load(open(file_name, 'rb'))
+    tracks_combined = '. '.join(tracks)
+    text_model = markovify.Text(tracks_combined)
+
+
 
 
 if __name__ == '__main__':
     # save_all_playlists()
-    get_all_playlists()
+    # get_all_playlists()
     # get_new_releases()
+    get_all_tracks("Indie Rock")
