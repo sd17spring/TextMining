@@ -35,7 +35,6 @@ def save_track_list(genre):
         while tracks['tracks']['next'] and total_tracks < 10000:
             for track in tracks['tracks']['items']:
                 track_name = track['name'].lower()  # Keep everything lowercase for simplicity
-
                 # Add track name to our list of track names
                 all_tracks.append(track_name)
             # Iterate to the next tracks
