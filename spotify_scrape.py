@@ -42,7 +42,7 @@ def save_track_list(genre):
             total_tracks += 50
 
         # Stores the data to reduce the number of API calls
-        file_name = 'tracks/{}.txt'.format('_'.join(genre.lower().split()))
+        file_name = '{}.txt'.format('_'.join(genre.lower().split()))
         with open(file_name, 'w') as in_file:
             in_file.write('\n'.join(all_tracks))
 
@@ -71,7 +71,7 @@ def gen_random_track(genre, fixed):
     Generates a random track of a given genre using Markov chains.
     """
     # Build the name of the text file to pull from
-    file_name = 'tracks/{}.txt'.format('_'.join(genre.lower().split()))
+    file_name = '{}.txt'.format('_'.join(genre.lower().split()))
     try:  # Exception handling in case the genre isn't founc
         if not os.path.isfile(file_name):
             print('Downloading list of tracks...')
@@ -80,7 +80,6 @@ def gen_random_track(genre, fixed):
             tracks = in_file.read()  # Read the text file containing the tracks
         # Build a Markov chain from the text file
         track_len = get_random_length(file_name)
-        print(track_len)
         text_model = track_text.TrackText(tracks, state_size=1)
         # Create new randomly-generated sentence.
         if fixed:  # If the length is fixed, make a fixed-length track

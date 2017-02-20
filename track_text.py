@@ -14,7 +14,8 @@ class TrackText(markovify.NewlineText):
         """
         Splits a string of words, and removes parts that are unwanted
         """
-        removed_words = ['feat.', 'remastered', 'remix', 'edit']  # These are common words that we don't want
+        # These words commonly aren't part of the actual track names, so we remove them
+        removed_words = ['feat.', 'remastered', 'remix', 'edit', 'version']
         punctuation = '&()\"[]:'  # Used to remove random punctuation from track titles
 
         words = re.split(self.word_split_pattern, sentence)
@@ -28,7 +29,7 @@ class TrackText(markovify.NewlineText):
         Makes a sentence of a fixed number of words by combining multiple Markov chains.
         """
         out_sentence = ''
-        cur_len = 0 # The current length of the track name
+        cur_len = 0  # The current length of the track name
         while cur_len < sentence_length:
             sentence = self.make_sentence(**kwargs)
             out_sentence += sentence + ' '
