@@ -8,7 +8,6 @@
     their respective wikipedia pages in corrolation with party affiliation.
 """
 
-from lxml import html
 import requests
 import pickle
 import wikipedia
@@ -16,6 +15,8 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
 
 sent = SentimentIntensityAnalyzer()
+rep_normalized = 0
+dem_normalized = 0
 
 
 class Point(object):
@@ -25,6 +26,15 @@ class Point(object):
 
 
 def find_people(s):
+    """
+        Parses through the html of the US Government page looking for specific
+        tags that reference names of politicians. Then calls slave functions
+        eliminate_doubles, conver_accents, and remove_commas to properly
+        format the resulting list of names.
+
+        Input: raw html in string form
+        Output: Clean list of names
+    """
     running = True
     senators = []
     num = 1
@@ -42,10 +52,17 @@ def find_people(s):
             s = s[index_e+3:]
         else:
             s = s[10:]
-    return(senators[440:])
+    sen = senators[440:]
+    return remove_commas(convert_accents(eliminate_doubles(sen)))
 
 
 def eliminate_doubles(ls, result=[]):
+    """
+        Web Page is formatted such that the index of all names is mixed
+        with the actual text, thus in order to strip the correct number of
+        politicians you must eliminate the doubles. This goes through the
+        primary list and returns a version of it with all doubles eliminated
+    """
     for name in ls:
         if name not in result:
             result.append(name)
@@ -53,6 +70,13 @@ def eliminate_doubles(ls, result=[]):
 
 
 def convert_accents(ls):
+    """
+        Finds and replaces all accented characters within the names of
+        the US politicians represented in the input list
+
+        Input: Full list of Politicians
+        Output: Full list of correctly formatted politicians
+    """
     blank = []
     for string in ls:
         if '&aacute;' in string:
@@ -70,6 +94,13 @@ def convert_accents(ls):
 
 
 def remove_commas(ls):
+    """
+        Takes a list of names in format Last, First and converts to
+        First Last format
+
+        Input: Full list of Politicians
+        Output: Full list of correctly formatted politicians
+    """
     blank = []
     for string in ls:
         index = string.find(',')
@@ -82,13 +113,18 @@ def look_up_people(ls):
     """
         Takes a list of politician's full names and finds them on wikipedia.
         Then goes through and analyzes this response, finding party
-        affiliations and positivity / negaitivity of each article.
+        affiliations and positivity / negativity of each article.
 
         Inputs: list of full names of senators
         Output: list of points containting sentiment scores
                 list of values holding party affiliations
 
     """
+    dem_totals = 0
+    dem_num = 0
+    rep_totals = 0
+    rep_num = 0
+
     points = []
     # 1 for Dem, 0 for Rep, -1 for non-affiliated
     party_affiliation = []
@@ -101,8 +137,12 @@ def look_up_people(ls):
             to_test = wikipedia.summary(person)
             if'Democrat' in to_test:
                 party_affiliation.append(1)
+                dem_num += 1
+                dem_totals += sentiment_analyze_overall(page_text)
             elif 'Republican' in to_test:
                 party_affiliation.append(0)
+                rep_num += 1
+                rep_totals += sentiment_analyze_overall(page_text)
             else:
                 party_affiliation.append(-1)
             hold = sentiment_analyze(page_text)
@@ -113,6 +153,10 @@ def look_up_people(ls):
             pass
     pickle.dump(points, open("points.p", "wb"))
     pickle.dump(party_affiliation, open("party.p", "wb"))
+    rep_normalized = rep_totals / rep_num
+    dem_normalized = dem_totals / dem_num
+    print('Republican Net Score: ', rep_normalized)
+    print('Democrat Net Score: ', dem_normalized)
     plot_values()
 
 
@@ -147,14 +191,22 @@ def plot_values():
             uyvals.append(point.y)
     plt.plot(dxvals, dyvals, 'bo')
     plt.plot(rxvals, ryvals, 'ro')
-    plt.plot(uxvals, uyvals, 'co')
     plt.axis([0, .16, 0, .1])
+    plt.ylabel('Negativity')
+    plt.xlabel('Positivity')
+    plt.title('Sentiment Values for Republicans and Democrats')
     plt.show()
 
 
 def sentiment_analyze(s):
     rating = sent.polarity_scores(s)
     a = Point(rating['pos'], rating['neg'])
+    return a
+
+
+def sentiment_analyze_overall(s):
+    rating = sent.polarity_scores(s)
+    a = rating['compound']
     return a
 
 
@@ -196,41 +248,47 @@ def plot_average():
     plt.plot(dx, dy, 'bo')
     plt.plot(rx, ry, 'ro')
     plt.axis([0, .16, 0, .1])
+    plt.ylabel('Negativity')
+    plt.xlabel('Positivity')
+    plt.title('Average Sentiment Values for Republicans and Democrats')
+
     plt.show()
 
 
-"""test = pickle.load(open('senators.p', 'rb'))
-for i in test:
-    print(i + '/n')
-look_up_people(test)"""
+if __name__ == '__main__':
+    """
+        Main section. This .py file contains all code necessary to run the
+        project. Necessary pickle files are included so as to make run time
+        shorter (does not actually call wikipedia in current form). In order
+        to get the full functionality uncomment the line "look_up_poeple()"
 
+        Republican and Democrat net score represent their respective cumulative
+        scores.
+    """
+    print("This only executes when %s is executed rather than imported")
+    """
+        d = {'&oacute;':'o','&aacute;':'a','&eacute;':'e'}
+        &oacute; -> o
+        &aacute; -> a
+        &eacute; -> e
 
-"""
-d = {'&oacute;':'o','&aacute;':'a','&eacute;':'e'}
-&oacute; -> o
-&aacute; -> a
-&eacute; -> e
-"""
-page = requests.get('http://www.house.gov/representatives/')
-tree = html.fromstring(page.content)
+        Republican Net Score:  0.7759978835978834
+        Democrat Net Score:    0.8074467980295562
 
+    """
+    page = requests.get('http://www.house.gov/representatives/')
 
-start_key = '">'
-end_key = '</a>'
-to_process = page.content.decode("utf-8")
-first_index = to_process.find(start_key)
+    start_key = '">'
+    end_key = '</a>'
+    to_process = page.content.decode("utf-8")
+    """
+        print('Finding People')
+        sen = find_people(to_process)
+        print('Republican Net Score: ', rep_normalized)
+        print('Democrat Net Score: ', dem_normalized)
+        pickle.dump(sen, open("senators.p", "wb"))
+    """
 
-"""print('Finding People')
-sen = find_people(to_process)
-print('Found People')
-print('Processing Text')
-sen = eliminate_doubles(sen)
-sen = convert_accents(sen)
-sen = remove_commas(sen)
-print('Processed Text')
-print('Saving List...')
-pickle.dump(sen, open("senators.p", "wb"))"""
-
-# look_up_people(sen)
-plot_values()
-plot_average()
+    # look_up_people(sen)
+    plot_values()
+    plot_average()
