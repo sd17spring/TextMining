@@ -12,12 +12,6 @@ def print_word_freqs(texts):
     text_letters = " ".join(re.findall("[a-zA-Z]+", str_copy))
     text_letters = text_letters.split()
     # Don't include words that tell you nothing
-    texts = [s + ' ' for s in texts]
-    str_copy = str(texts)
-    # Get rid of punctuation
-    word1 = " ".join(re.findall("[a-zA-Z]+",
-                                str_copy))
-    word1 = word1.split()
     stop_words = ['a', 't', 'co', 'https', 'to', 'in', 'n', 'is', 'nhttps']
     stop_words += ['the', 'and', 'amp', 'pm', 'out', 'on', 'for', 'at']
     stop_words += ['s', 'of', 'be', 'going', 'p', 'The', 'it', 'our']
