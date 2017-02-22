@@ -22,12 +22,12 @@ def analyze_text(myString):
                     if two_rhyme(j, myList[i]) == -1:
                         idk += 1
                         break
-                if rating >= 150:
+                if rating >= 100:
                     same += 1
                     print(j + ' ' + myList[i])
 
         running.append(myList[i])
-        if len(running) > 10:
+        if len(running) > 15:
             running.pop(0)
 
     print(idk)
@@ -102,4 +102,4 @@ if __name__ == '__main__':
     # print(analyze_text("Sometimes I like to walk in the park especially enjoy the fresh air and birds signing. After I go, I feel good"))
     from bs4 import BeautifulSoup
     import requests
-    rhyme_finder('http://www.metrolyrics.com/anaconda-lyrics-nicki-minaj.html')
+    rhyme_finder('http://www.metrolyrics.com/ive-got-you-under-my-skin-lyrics-frank-sinatra.html')
