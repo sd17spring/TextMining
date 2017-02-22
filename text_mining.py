@@ -6,16 +6,20 @@ timelines. The results for each indivual players are groupd by clubs to create
 club sentiment anaylsis data for each of the EPL clubs.
 """
 
-import doctest
+#  Data Sources
 import twitter
 import wikipedia
+from bs4 import BeautifulSoup
+
+# Text Analyzer
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+import doctest
 import datetime
 import re
 from pickle import dump, load
 from os.path import exists
 from os import mkdir
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from bs4 import BeautifulSoup
 
 
 def get_credentials(filename):
@@ -140,7 +144,7 @@ def save_tweets_texts(filename, players):
                 tweet_texts[player.name] = get_texts_from_player(player.name,
                                                                  START_TIME)
             except Exception:
-                pass
+                pass #  when Exception occurs, just ignore the player.
     f = open(filename, 'wb')
     try:
         dump(tweet_texts, f)
@@ -195,25 +199,53 @@ def all_players_nltk_analysis(player_list, tweet_texts):
     return result
 
 
-def club_of_this_player(player_name):
+def save_clubs_dictionary(filename, players):
     """
-    Returns the current club that the player with "player_name" belongs to.
-    Fetches the "current_team" using Wikipedia and beautifulsoup4
-    Beautifulsoup4 is used to find the first "td" element with class "org"
-    which stands for the current team in wikipedia's infoboxes.
+    Returns a dictionary that uses player names as keys, the clubs as values.
+    (Tells you which club a player belongs to)
+    Fetches the "current_team" using Wikipedia and beautifulsoup4.
+    Beautifulsoup4 finds the first "td" element with class "org"
+    which is the "current team" infomation found in wikipedia's infoboxes.
     CAUTION : This function isn't totally reliable
-    (there might not exist any wikipedia page for cetain players)
-
+    (there might not exist any wikipedia page for cetain players).
+    When an exception occurs, "unknown" become the value for the key.
+    CAUTION2 : THIS TAKES A LONG TIME
     """
-    page = wikipedia.page(player_name)
-    soup = BeautifulSoup(page.html(), "lxml")
-    team = soup.find("td", class_="org").get_text().strip()
-    return team
+    clubs_dictionary = dict()
+    for player in players:
+        player_name = player.name
+        try:
+            page = wikipedia.page(player_name)
+            soup = BeautifulSoup(page.html(), "lxml")
+            club = soup.find("td", class_="org").get_text().strip()
+        except Exception:  # if the search fails, club is 'unknown'
+            club = 'unknown'
+        finally:
+            clubs_dictionary[player_name] = club
+
+    f = open(filename, 'wb')
+    try:
+        dump(clubs_dictionary, f)
+    finally:
+        f.close()
 
 
-def club_nltk_analysis(players_nltk_results):
+def load_clubs_dictionary(filename):
     """
-    Returns the sum of all NLTK_analysis results by clubs as dictionary
+    Returns the dictionary of clubs and players
+    """
+    f = open(filename, 'rb')
+    clubs = dict()
+    try:
+        clubs = load(f)  # loads the number of players
+    finally:
+        f.close()
+        return clubs
+
+
+def club_nltk_analysis(players_nltk_results, club_dictionary):
+    """
+    Returns the sum of all NLTK_analysis results for EPL clubs as dictionary
     ex) {ManU : [0,0,0,0],
          ManCity : [0,0,0,0]}
     """
@@ -224,18 +256,21 @@ def club_nltk_analysis(players_nltk_results):
                  'Swansea City', 'Tottenham Hotspur', 'Watford',
                  'West Bromwich Albion', 'West Ham United']
     club_analysis = dict()
+    for club in epl_clubs:
+        club_analysis[club] = [0, 0, 0, 0]
     for player_name in players_nltk_results:
-        try:
-            club = club_of_this_player(player_name)
-            if club in epl_clubs:
-                club_analysis[club] += nltk_results[player_name]
-        except Exception:
-            pass
-
+        for club in epl_clubs:
+            # startswith method is used here for texts like..
+            # ex) 'Aresenal(on transfer from XX)'
+            if club_dictionary[player_name].startswith(club):
+                club_analysis[club][0] += players_nltk_results[player_name][0]
+                club_analysis[club][1] += players_nltk_results[player_name][1]
+                club_analysis[club][2] += players_nltk_results[player_name][2]
+                club_analysis[club][3] += players_nltk_results[player_name][3]
     return club_analysis
 
 
-def sort_by_key(key):
+def sort_by_key(dictionary, key):
     """
     Returns a list of EPL clubs by the order of "key" from club_nltk_analysis
     keys : "compound, neg, neu, pos"
@@ -246,6 +281,8 @@ def sort_by_key(key):
 
 if __name__ == '__main__':
     doctest.testmod()
+    # --------------------------------------------------------------------------
+    # Part 0 -> Credentials for Twitter API Access
     credentials = get_credentials("keys.txt")
     CONSUMER_KEY = credentials[0]
     CONSUMER_SECRET = credentials[1]
@@ -255,16 +292,30 @@ if __name__ == '__main__':
                       consumer_secret=CONSUMER_SECRET,
                       access_token_key=ACCESS_TOKEN_KEY,
                       access_token_secret=ACCESS_TOKEN_SECRET)
+
+    # --------------------------------------------------------------------------
+    # Part 1 -> Pickles Twitter 'user instances' of all epl_players
+    #           listed in a Twitter List(EPL Players, Official BBC list)
     players_data = 'epl_players.pickle'
-    if not exists(players_data):  # pickles only once if data doesn't exist
+    if not exists(players_data):
         save_epl_members_list(players_data, api)
     # list of all player instances
     all_players = load_epl_members_list(players_data)
+
+    # --------------------------------------------------------------------------
+    # Part 2 -> Pickles Twitter 'status instances' for all 'user instances'
     for player in all_players:
         #  pickles status data for users with unprotected timelines
         status_data = "players_status/" + player.name
         if not exists(status_data) and not player.protected:
             save_tweets(player.id, player.name, api)
+
+    # --------------------------------------------------------------------------
+    # Part 3 -> Pickles tweet texts of status instances(unprotected timeline)
+    # Texts are processed so that tags, hashtags, htmls are elimimnated.
+    # Only Tweets from the first day of EPL16-17 season is saved.
+    # The maximum number of status instances for each user insnaces is 200
+
     # First Day of EPL16-17
     START_TIME = datetime.datetime.strptime("Sat Aug 13 00:00:00 +0000 2016",
                                             '%a %b %d %X %z %Y')
@@ -272,5 +323,23 @@ if __name__ == '__main__':
     if not exists(tweets_data):
         save_tweets_texts(tweets_data, all_players)
     tweet_texts = load_tweets_texts(tweets_data)  # Processed tweet texts
+
+    # --------------------------------------------------------------------------
+    # Part 4 -> Conducts Sentimental Analysis(NLTK)
+    #           with tweet texts of all user instnaces with unprotected
+    #           timelines. (Tweets of EPL Players with open timelines)
     nltk_results = all_players_nltk_analysis(all_players, tweet_texts)
-    club_analysis_results = club_nltk_analysis(nltk_results)  # need to pickle
+
+    # --------------------------------------------------------------------------
+    # Part 5 -> Regroups the NLTK results by EPL Clubs.
+    #           Pickles current club of of a player from Wikipedia
+    #           by using Wikipedia and BeautifulSoup package.
+    #           (as a dictoinary that maps a player to a club)
+    clubs_data = 'epl_clubs_players.pickle'
+    if not exists(clubs_data):
+        save_clubs_dictionary(clubs_data, all_players)
+    clubs_dict = load_clubs_dictionary(clubs_data)
+    club_analysis_results = club_nltk_analysis(nltk_results, clubs_dict)
+
+    # --------------------------------------------------------------------------
+    # Part 6 -> Regroups the NLTK results by EPL Clubs.
