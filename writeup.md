@@ -44,8 +44,8 @@ most song titles tend to be much shorter than a sentence in length, the song tit
 analysis, I created a method of generating song titles that match the length of song titles in a genre. The program looks at the length of each song title, in words, and generates a probability distribution
 of the song title lengths for that particular genre.  The histograms below demonstrate the difference in name length frequencies between genres.
 
-![Indie rock name length frequencies](indie_rock_hist.png =500x500)
-![Metal name length frequencies](metal_hist.png =500x500)
+![Indie rock name length frequencies](indie_rock_hist.png)
+![Metal name length frequencies](metal_hist.png)
 
 Then, when a song title is generated, a length is also randomly selected based on the probability distribution of the various lengths. However, in order to make this fit with Markov chains, which aren't
 very compatible with fixed-length sentence generation, multiple Markov chains sometimes have to be stringed together and truncated - which isn't ideal, but still retains some of the qualities of the Markov
