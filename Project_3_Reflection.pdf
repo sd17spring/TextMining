@@ -1,0 +1,28 @@
+Alex Chapman
+Project 3
+2/21/17
+
+Project Overview:
+I wanted to look at how positive or negative the respective wikipedia pages of our nation's representatives were, and how that attitude correlated to their respective party affiliations. I used vadersentiment to analze their positivity, and matplotlib to visualize and represent the data. 
+
+
+Implementation:
+I grabbed a list of U.S. Representatives from the Government webpage at "http://www.house.gov/representatives/" by parsing through the page's html. From there I removed the duplicate names (due
+to the formatting of the page), changed the format from "last name, first name" to "first name last name", and removed accented character references. Then the list of representatives was saved as a pickle file to limit repeated calls to the government website, and the politicians were looked up on
+wikipedia. Each page was analyzed for sentiment using vaderSentiment, and the resulting positivity and
+negativity was saved into a list along with the politicians party affiliation (also gotten from wikipedia), which was then dumped as a pickle file. This data was then acessed and plotted on a 2D plot, with red dots representing republicans' composite scores, and blue representing democrats'. Finally an average value for each party was found and plotted on the subsequent plot.
+
+Overall the final result can be produced with just three function calls, the first of which only needs to be run once (it is the one which handles all of the web access). The other two deal with displaying the data. This was a good final structure in that it allowed the rapid iterative design of the plots while not exceeding either wikipedia or the government's page views per minute quota. 
+
+In terms of design decisions it would have been easy to merely create a cummulative average composite score of the various politicians' wikipedia pages, but instead chose to look at the spread of the actual positivitiy and negativity of the pages, getting more value out of the spread of points on a plot than out of two numbers alone. These are still printed, and can be seen in the comments at the bottom of my script. 
+
+
+Results:
+I ultimately found that wikipedia was a largely unbiased information source. All told the greatest observed descrepancy was in the order of .12 units, which roughly correlates to 12% of the total spectrum. This is fairly condensed, and wasnt the large variation that I had honestly expected to see. Beyond this, the appearance of the full point field yields very little information, they all look randomly dispersed. That being said, however, the bottom right portion of the plot(more positive, less negative) has a disporpotionately high number of blue dots, likely leading to the blue average point being slightly more positive and slightly less negative than the republican one. 
+
+Another interesting thing is that over the course of the time I was working on this project (~2 weeks) the sentiment of the democratic wikipedia pages actually decreased in negativity and increased in positivity. This difference was, however, overall small with the difference between the two average points being around 1%. Screenshots of the plots can be seen on my github repository. 
+
+
+Reflection:
+I think this went well, although coming up with a relevant and impactful idea seemed to be fairly diffucult. The scope was good, but could have entailed some markov chains which would have been #dope. A working knowledge of HTML would be cool, but I managed without it. I also sortof brute forced my way through the html analysis, doing mostly string operations. 
+
