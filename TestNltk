@@ -1,0 +1,3 @@
+import nltk
+tagged_keys = nltk.pos_tag("those are some fun activities".split())
+print(tagged_keys)
