@@ -1,3 +1,10 @@
-# TextMining
+# Spotify Text Mining: Random Song Name Generation
 
-This is the base repo for the text mining and analysis project for Software Design at Olin College.
+This Python script generates random song names of a particular genre by using Markov chains.
+
+Usage: `python3 spotify_scrape.py "Genre Name"`
+
+Optional arguments:
+
+`--fixed`: Generates song titles with lengths distributed according to the length distribution of the genre.
+`--graph`: Creats a histogram of song title lengths for the genre.

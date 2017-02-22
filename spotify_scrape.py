@@ -11,10 +11,16 @@ from spotipy import Spotify
 import track_text
 import os.path
 from numpy.random import choice
+import matplotlib
+# Comment out this line, or change it, depending on what backend works for you
+matplotlib.use('GTK3Cairo')
+import matplotlib.pyplot as plt
+
 
 # Parse arguments
 parser = argparse.ArgumentParser(description='Enter API Credentials')
 parser.add_argument('--fixed', help='Generate fixed-length track', action='store_true')
+parser.add_argument('--graph', help='Show a histogram of track lengths', action='store_true')
 parser.add_argument('genre', help='The genre of song to generate.')
 args = parser.parse_args()
 
@@ -47,13 +53,14 @@ def save_track_list(genre):
             in_file.write('\n'.join(all_tracks))
 
 
-def get_random_length(in_file):
+def get_random_length(genre, graph):
     """
     Generates a random track length, in number of words.
     Works by parsing the word length of each track in in_fil, then building
     a probability distribution of lengths, and picking a length randomly
     according to that distribution.
     """
+    in_file = '{}.txt'.format('_'.join(genre.lower().split()))
     text_lines = open(in_file, 'r').read().split('\n')
     word_lens = [len(line.split()) for line in text_lines]  # Build a list of the word length of each track
     len_freqs = [0 for val in range(0, max(word_lens))]  # Build an empty list to track probabilities
@@ -63,10 +70,17 @@ def get_random_length(in_file):
         len_freqs[length-1] += 1  # Populate the probably distribution list with each track
     len_freqs = [freq/len(word_lens) for freq in len_freqs]  # Convert length counts to probabilities
     string_len = choice(lens, p=len_freqs)  # Choose a track length randomly based on the probabilities
+    if graph:  # If selected, display a histogram of track length frequency
+        plt.hist(word_lens, bins=lens, normed=True, color='blue')
+        plt.xlabel('Track name length in words')
+        plt.ylabel('Probability of occurrence')
+        plt.title(genre + ' Track Name Lengths')
+        plt.xticks(lens)
+        plt.show()
     return string_len
 
 
-def gen_random_track(genre, fixed):
+def gen_random_track(genre, fixed, graph=False):
     """
     Generates a random track of a given genre using Markov chains.
     """
@@ -79,7 +93,7 @@ def gen_random_track(genre, fixed):
         with open(file_name, 'r') as in_file:
             tracks = in_file.read()  # Read the text file containing the tracks
         # Build a Markov chain from the text file
-        track_len = get_random_length(file_name)
+        track_len = get_random_length(genre, graph)
         text_model = track_text.TrackText(tracks, state_size=1)
         # Create new randomly-generated sentence.
         if fixed:  # If the length is fixed, make a fixed-length track
@@ -96,4 +110,4 @@ def gen_random_track(genre, fixed):
 if __name__ == '__main__':
     # Create spotify client and generate tracks
     sp = Spotify()
-    print(gen_random_track(args.genre, args.fixed))
+    print(gen_random_track(args.genre, args.fixed, args.graph))
