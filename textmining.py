@@ -26,7 +26,7 @@ def read_presidents_texts():
 
 
 def make_words(president_file_lines):
-    """ This function takes each President file and splits the lines into words
+    """ This function takes each President file and splits the lines into words.
         >>> make_words(['What do you mean?'])
         ['What', 'do', 'you', 'mean?']
     """
@@ -38,12 +38,19 @@ def make_words(president_file_lines):
 
 
 def exclude(letter):
+    """This function should exclude characters that are punctuation or
+    whitespace.
+    >>> exclude(' ')
+    True
+    >>> exclude('#')
+    True
+    """
     return letter in string.punctuation or letter in string.whitespace
 
 
 def format_word(word):
     """This function will strip all of the words of punctuation and whitespaces
-        then make the words lowercase
+        then make the words lowercase.
         >>> format_word('DOG')
         'dog'
         >>> format_word('!!!')
@@ -53,6 +60,11 @@ def format_word(word):
 
 
 def format_words(words):
+    """This function should run all of the words from the Wikipedia pages through
+        format_word function and return a list of the formatted words.
+        >>> format_words(['D!oG', 'what', 'CELLAR'])
+        ['dog', 'what', 'cellar']
+    """
     formatted_words = []
     for word in words:
         better_word = format_word(word)
@@ -63,8 +75,11 @@ def format_words(words):
 def word_frequency(formatted_words):
     """This function will take all words from the Wikipedia pages and return
         the most frequent from each page, with certain exclusions.
+        >>> word_frequency(['dogs', 'cat', 'the', 'fires', 'fires'])
+        'fires'
+        >>> word_frequency(['tetris', 'tetris', 'and', 'but'])
+        'tetris'
     """
-    # 'John', 'Taft', 'Bush'
     d = {}
     for word in formatted_words:
         with open('bad_words.txt', 'r') as f:
