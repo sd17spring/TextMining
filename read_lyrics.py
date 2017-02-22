@@ -7,20 +7,25 @@ def analyze_text(myString):
     myList = myString.split(" ")
     running = []
     running.append(myList[0])
+
     idk = 0
     same = 0
+    usedRhymes = []
     for i in range(1, len(myList)):
         for j in running:
-            rating = two_rhyme(j, myList[i])
-            if rating == -1:
-                while two_rhyme(j, myList[i]) == -1 and len(myList[i]) > 1:
-                    myList[i] = myList[i][1:len(myList[i])]
-                if two_rhyme(j, myList[i]) == -1:
-                    idk += 1
-                    break
-            if rating >= 150:
-                same += 1
-                print(j + ' ' + myList[i])
+            if not usedRhymes.__contains__(j + myList[i]):
+                usedRhymes.append(j + myList[i])
+                rating = two_rhyme(j, myList[i])
+                if rating == -1:
+                    while two_rhyme(j, myList[i]) == -1 and len(myList[i]) > 1:
+                        myList[i] = myList[i][1:len(myList[i])]
+                    if two_rhyme(j, myList[i]) == -1:
+                        idk += 1
+                        break
+                if rating >= 150:
+                    same += 1
+                    print(j + ' ' + myList[i])
+
         running.append(myList[i])
         if len(running) > 10:
             running.pop(0)
