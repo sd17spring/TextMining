@@ -5,6 +5,7 @@ for common things we don't want in track titles.
 
 import markovify
 import re
+import doctest
 
 
 # Extends NewlineText because that works best for the format of our data

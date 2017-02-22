@@ -3,6 +3,7 @@
 **NOTE:** the Project Writeup for this project is located in the repo, in writeup.md.
 
 This Python script generates random song names of a particular genre by using Markov chains.
+Requires: Spotipy, numpy, matplotlib
 
 Usage: `python3 spotify_scrape.py "Genre Name"`
 
