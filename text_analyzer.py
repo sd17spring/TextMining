@@ -6,17 +6,11 @@ analyzes the tweets for sentiment, and displays the results.
 """
 
 from os import path
-import os
 from wordcloud import WordCloud
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-
-# Setup Plotly Key
-import plotly
-API_KEY = os.environ.get('PLOTLY_API_KEY')
-plotly.tools.set_credentials_file(username='segerpeter07', api_key=API_KEY)
 
 # Open the data1.txt file and read each tweet broken up by '+++'
 with open('data1.txt', 'r') as f:
@@ -77,12 +71,6 @@ def most_common_data(person, data):
     res = []
     for key, value in data.items():
         res.append((value, key))
-
-    # common = []
-    # res.sort(reverse=True)
-    # for freq, word in res[:10]:
-    #     common.append(word, freq)
-    # return common
     return res
 
 
@@ -151,7 +139,7 @@ def plot_word_frequency(d):
     plt.hist(d, bins=10)
 
     # save it!
-    plt.savefig('WordFreqency1.png', bbox_inches='tight')
+    plt.savefig('WordFreqency1.jpg', bbox_inches='tight')
 
 
 def plot_sentiment(user1, user2, a, b):
@@ -179,7 +167,7 @@ def plot_sentiment(user1, user2, a, b):
     sns.despine(bottom=True)
     plt.setp(f.axes, yticks=[])
     plt.tight_layout(h_pad=3)
-    plt.savefig(filename='Tester_4.png')
+    plt.savefig(filename='Tester_6.jpg')
 
 
 def main(user1, user2):
