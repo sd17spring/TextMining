@@ -2,6 +2,7 @@
 SoftDes project 3: text mining
 
 Noah Rivkin
+
 use text mining and markov chains to generate text based on silly
 book/movie/comic villain monologues....
 
@@ -24,7 +25,8 @@ def get_text(file_name, url = ''):
     opens the file with text in it, if the file exists.
     If the file does not exist gets the text from the web adress, and
     stores it in a pickled format,before opening it to read
-    for example http://www.gutenberg.org/cache/epub/100/pg100.txt
+    for example http://www.gutenberg.org/cache/epub/100/pg100.txt,
+    which is the complete works of Shakespeare
     """
     if os.path.exists(file_name): # checks if the file has already been downloaded
         f = open(file_name, 'rb')
@@ -109,6 +111,7 @@ def get_suffix_dict(text, prefix):
     else:
         suffix_hist = {}
         text = text.replace('\r',' ')
+        text = text.replace('--', ' ')
         text = text.split(' ')
         for i in range(len(text) - 1):
             word = text[i]
@@ -148,10 +151,10 @@ def marcovchain(seed, length, text):
     return result
 
 
-text = get_text('tale_of_two_cities.txt')
+text = get_text('tale_of_two_cities.txt', 'http://www.gutenberg.org/files/98/98-0.txt')
 
 
-print(marcovchain('or', 200, text))
+print(marcovchain('or', 100, text))
 
 import doctest
-# doctest.testmod()
+doctest.testmod()
