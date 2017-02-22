@@ -6,37 +6,57 @@ and returns the combined results for each club in EPL 2016-2017.
 
 import doctest
 import twitter
+from pickle import dump, load
+from os.path import exists
+from os import mkdir
 
 
 def get_credentials(filename):
     """
     Returns credentials for twitter api from file with filename
     """
-    pass
+    f = open('keys.txt')
+    keys = f.readlines()
+    # codes from Oliver Steele's Piazza Class notes : keeping secrets
+    credentials = []
+    try:
+        for line in keys:
+            credentials.append(line.strip())
+    finally:
+        f.close()
+    return credentials
 
 
-def save_epl_members_list(filename):
+def save_epl_members_list(filename, api):
     """
-    Pickles tuples of (name,twitter_id) of
-    all members of "Premier League Players" Twitter list(public list by BBC)
-    into a binary file "filename" that can be loaded with load_epl_members_list
+    Retrieves sequence of twitter.user.User instances of
+    "Premier League Players" Twitter list(public list by BBC) as a list
+    Pickles the twitter user instance for each player
     """
-    pass
+    epl_players = api.GetListMembers(None, 'premier-league-players',
+                                     None, 'BBCSport')
+    f = open(filename, 'wb')
+    dump(len(epl_players), f)  # saves the number of players
+    try:
+        for each_player in epl_players:
+            dump(each_player, f)
+    finally:
+        f.close()
 
 
 def load_epl_members_list(filename):
     """
-    Returns a list of previous pickled tuples of EPL players.
+    Returns a list of previous pickled user instances of EPL players
     """
-    pass
-
-
-def follow_all_members_in_list(list_of_members, credentials):
-    """
-    Make the twitter account to follow all the members of a list automatically
-    (so that manually following each member is unnecessary, and Twitter API
-    requires that you follow the person to retrieve the tweets"
-    """
+    f = open(filename, 'rb')
+    players = []
+    num_players = load(f)  # loads the number of players
+    try:
+        for i in range(num_players):
+            players.append(load(f))
+    finally:
+        f.close()
+        return players
 
 
 def club_of_this_player(player_name):
@@ -49,17 +69,38 @@ def club_of_this_player(player_name):
     """
 
 
-def save_tweets(player_name, start_time, end_time):
+def save_tweets(player_id, player_name, api):
     """
-    Creates file "player_tweets\player_name.txt" that contains all the Tweets
-    of player_name from start_time to end_time.
+    Pickles file "players_status"/player_name.pickle" of
+    200 latest Status Instances of player with player_id.
+    200 is the maximum number of tweets limited by Twitter Api.
     """
+    #  pickles the latest 200(max limit) statuses for each player
+    statuses = api.GetUserTimeline(user_id=player_id, count=200)
+    if not exists("players_status"):
+        mkdir("players_status")
+    f = open("players_status/" + player_name, 'wb')
+    dump(len(statuses), f)  # saves the number of total Tweets
+    try:
+        for status in statuses:
+            dump(status, f)
+    finally:
+        f.close()
 
 
 def load_tweets(player_name):
     """
-    Returns a list of all pickled tweets of player with player_name
+    Returns a list of all pickled Status Instances of player with player_name
     """
+    f = open("players_status/" + player_name, 'rb')
+    statuses = []
+    num_status = load(f)  # loads the number of players
+    try:
+        for i in range(num_status):
+            statuses.append(load(f))
+    finally:
+        f.close()
+        return statuses
 
 
 def individual_player_nltk_analysis(player_name):
@@ -102,5 +143,20 @@ def sort_by_key(key):
 if __name__ == '__main__':
     doctest.testmod()
     credentials = get_credentials("keys.txt")
-    api = twitter.Api(credentials)
-    print(api.GetUserTimeline(screen_name='anto_v25'))
+    CONSUMER_KEY = credentials[0]
+    CONSUMER_SECRET = credentials[1]
+    ACCESS_TOKEN_KEY = credentials[2]
+    ACCESS_TOKEN_SECRET = credentials[3]
+    api = twitter.Api(consumer_key=CONSUMER_KEY,
+                      consumer_secret=CONSUMER_SECRET,
+                      access_token_key=ACCESS_TOKEN_KEY,
+                      access_token_secret=ACCESS_TOKEN_SECRET)
+    players_data = 'epl_players.pickle'
+    if not exists(players_data):  # pickles only once if data doesn't exist
+        save_epl_members_list(players_data, api)
+    players = load_epl_members_list(players_data)  # list of player names
+    for player in players:
+        #  pickles status data for unprotected users
+        status_data = "players_status/" + player.name
+        if not exists(status_data) and not player.protected:
+            save_tweets(player.id, player.name, api)
