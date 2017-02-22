@@ -20,6 +20,7 @@ import os
 #     f = open("Texts/" + name[0] + '.txt','w+')
 #     f.write(speech)
 #     f.close
+print("testing git ignroe")
 names = []
 for filename in os.listdir("/home/zneb/SoftDes/TextMining/Texts"):
     speech = open("Texts/"+filename,'r')
