@@ -93,4 +93,9 @@ ENV/
 # Rope project settings
 .ropeproject
 
+Reddit_Password.txt
+Reddit_Secret.txt
+Reddit_clientID.txt
+Reddit_username.txt
+  
 # End of https://www.gitignore.io/api/python
