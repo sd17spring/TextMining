@@ -1,10 +1,10 @@
 import twitter
 import pickle
 def pull_tweets(id_max):
-    CONSUMER_KEY = 'VwJn9jPhW4Sc1nwjN4mXFbFbW'
-    CONSUMER_SECRET = 'wqh4DPw1Xz64vwoAsBeiXP3QZvQixiz42ian4wZbpdvPHKAaHF'
-    ACCESS_TOKEN_KEY = 	'833009564517859329-IpVI91sADLQvcKOs7TGLEyYreHAQSPA'
-    ACCESS_TOKEN_SECRET = 'r4HN7n1grgXbIbSKTUlxGw2vLQAz0v5iRwqVX326SeFyC'
+    CONSUMER_KEY = '*'
+    CONSUMER_SECRET = '*'
+    ACCESS_TOKEN_KEY = 	'*'
+    ACCESS_TOKEN_SECRET = '*'
 
     api = twitter.Api(consumer_key=CONSUMER_KEY,
                   consumer_secret=CONSUMER_SECRET,
