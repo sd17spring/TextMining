@@ -3,7 +3,7 @@
 
 ### Project Overview :
 
-This projects uses Twitter as the data source for collecting the Tweets of all [English Premier League Players](https://twitter.com/BBCSport/lists/premier-league-players/members?lang=en) starting from the first day of the season(13 August, 2016) to 16 Feb, 2017. [Sentiment analysis(NLTK)](http://www.nltk.org/howto/sentiment.html) of Tweets was conducted to find out if there exists any relationship between the league standing and the result of the sentiment analysis of each club. Let's figure out whether Sir Alex Ferguson, the legendary ManU manager who said <i>"Twitter is a waste of time"</i> was indeed right or not!
+This projects uses Twitter as the data source for collecting the Tweets of all of the [English Premier League Players](https://twitter.com/BBCSport/lists/premier-league-players/members?lang=en) starting from the first day of the season(13 August, 2016) to 18 Feb, 2017. A [Sentiment analysis(NLTK)](http://www.nltk.org/howto/sentiment.html) of Tweets was conducted to find out if there exists any relationship between the current league standing and the result of the sentiment analysis of each club. Let's find out whether Sir Alex Ferguson, the legendary Manchester United manager who claimed that <i>"Twitter is a waste of time"</i> was indeed right or not!
 
 ### Implementation [~2-3 paragraphs]  
 
