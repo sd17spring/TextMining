@@ -11,17 +11,17 @@ aenid_reloaded = pickle.load(input_file2)
 aenid_reloaded = aenid_reloaded[545:-19100]
 
 
-def process_file(filename):
+def process_file(text):
     hist = dict()
-    text = open(filename)
-    for line in text:
+    text = text
+    for line in text.splitlines():
         process_line(line, hist)
     return hist
 
 
 def process_line(line, hist):
     line = line.replace('-', ' ')
-    line = line.replace("'" '')
+    line = line.replace("'", '')
     for word in line.split():
         word = word.strip(string.punctuation + string.whitespace)
         word = word.lower()
@@ -32,8 +32,13 @@ def different_words(hist):
     return len(hist)
 
 
-hist = process_file(beowulf_mini)
-'''the issue is that beowulf_mini isn't a file name, it's a string. a very long
-string. not sure how to fix that.'''
+def most_common(hist):
+    t = []
+    for key, value in hist.items():
+        t.append((value, key))
+    t.sort(reverse=True)
+    return t
 
-print(different_words(hist))
+
+hist = process_file(beowulf_reloaded)
+print(most_common(hist))
