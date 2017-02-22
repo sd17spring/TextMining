@@ -5,6 +5,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+plotlyAPIKey.txt
+test.py
 
 # C extensions
 *.so
