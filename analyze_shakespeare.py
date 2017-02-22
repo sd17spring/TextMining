@@ -40,8 +40,8 @@ def edit_text(words):
     Takes text, gets rid of punctuation, makes lowercase,
     and gets rid of whitespace character \r. Returns list
     of all words
-    >>> edittext('HI THERE!!! You are so \r $WEET?')
-    ['hi', 'there', 'you', 'are', 'so', 'sweet']
+    >>> edit_text('HI THERE!!! You are so $WEET?')
+    ['hi', 'there', 'you', 'are', 'so', 'weet']
     """
     for symbol in string.punctuation:  # removes punctuation
         words = words.replace(symbol, '')
