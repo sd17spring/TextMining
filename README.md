@@ -1,6 +1,6 @@
 # News Sentiment Analyzer
 
-For my [Software Design Mini Project 3](https://sd17spring.github.io/assignments/mini-project-3-text-mining/), I decided to analyze articles from various biased online news sources and compare the positivity and negativity of each. The program fetches various sites' RSS feeds, scrapes the content of each article listed, runs it through [VADER Sentiment Analysis](https://github.com/cjhutto/vaderSentiment), and plots each source based on the positive and negative sentiment scores. I initially hoped to see if certain news outlets were significantly more negative than others.
+For my [Software Design Mini Project 3](https://sd17spring.github.io/assignments/mini-project-3-text-mining/), I decided to analyze articles from various online news sources (of varying bias) and compare the positivity and negativity of each. The program fetches various sites' RSS feeds, scrapes the content of each article listed, runs it through [VADER Sentiment Analysis](https://github.com/cjhutto/vaderSentiment), and plots each source based on the positive and negative sentiment scores. I initially hoped to see if certain news outlets were significantly more negative than others.
 
 ### Implementation
 
