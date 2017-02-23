@@ -1,3 +1,5 @@
 # TextMining
 
-This is the base repo for the text mining and analysis project for Software Design at Olin College.
+Project writeup can be found:  https://github.com/tatianaanthony/TextMining/blob/master/Project%20Writeup.pdf
+
+When just loading data to graph, comment out 192 and 194, and uncomment 195
