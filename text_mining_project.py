@@ -13,7 +13,7 @@ aenid_reloaded = aenid_reloaded[545:-19100]
 
 both_texts = aenid_reloaded + beowulf_reloaded
 text = 'Hello cruel world \n Why are people cruel \n I do not love the world \n Why are we here'
-prefix_length = 1
+prefix_length = 3
 
 
 def process_file(text):
@@ -30,7 +30,7 @@ def process_line(line, hist, extended_line, prefixes_dict):
     line = line.replace('-', ' ')
     line = line.replace("'", '')
     for word in line.split():
-        word = word.strip(string.punctuation + string.whitespace)
+        word = word.strip(string.whitespace)
         word = word.lower()
         if len(word) > 0:
             if word[0] not in string.digits:
@@ -43,7 +43,7 @@ def process_line(line, hist, extended_line, prefixes_dict):
 
 def process_prefixes(extended_line, prefixes_dict):
     count = 0
-    while count < len(extended_line)-prefix_length-1:
+    while count < len(extended_line)-prefix_length:
         prefix = tuple(extended_line[count:count+prefix_length])
         suffix = extended_line[count+prefix_length],
         prefixes_dict[prefix] = prefixes_dict.get(prefix, tuple()) + suffix
@@ -52,11 +52,8 @@ def process_prefixes(extended_line, prefixes_dict):
 
 def write_verse(hist, prefixes_dict):
     new_text = ''
-    prefix = ['love']
-    print(prefixes_dict)
-    # for i in range(prefix_length):
-    #     prefix.append(random.choice(list(hist.keys())))
-    for i in range(10):
+    prefix = list(random.choice(list(prefixes_dict.keys())))
+    for i in range(100):
         if prefixes_dict[tuple(prefix)]:
             options = prefixes_dict[tuple(prefix)]                               # DOES NOT ACCOUNT FOR THE LAST WORD
         else:
@@ -76,4 +73,4 @@ def most_common(hist):
     return t
 
 
-hist = process_file(text)
+hist = process_file(both_texts)
