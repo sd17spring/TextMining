@@ -41,46 +41,52 @@ def get_text(file_name, url = ''):
         return text[900: len(text)]
 
 
-def histogram(text):
-    """
-    generates dictionary with word frequencies
-    >>> histogram('d d d d d')
-    {'d': 5}
-    """
-    hist = {}
-    text = text.replace('\r','\r ') # keeps the return, but still splits up the words
-    text = text.split(' ')
-    for word in text:
-        word = word.strip(string.punctuation + string.whitespace + '1234567890?')
-        word = word.lower()
-        if word not in hist and word != '':
-            hist[word] = 1
-        elif word != '':
-            hist[word] = hist[word] + 1
-    return hist
-
-
-def get_most_freq(hist, n):
-    """
-    finds the n most common words
-    >>> get_most_freq({'a': 5, 's': 3, 'd': 7},2)
-    [['d', 'a'], [7, 5]]
-    """
-    top_n_words = []
-    top_n_freqs = []
-    for i in range(n):
-        most_common = ''
-        most_times = 0
-        total = 0
-        for key in hist:
-            if key not in top_n_words:
-                num = hist[key]
-                if num > most_times:
-                    most_times = num
-                    most_common = key
-        top_n_words.append(most_common)
-        top_n_freqs.append(most_times)
-    return [top_n_words, top_n_freqs]
+# def histogram(text):
+#     """
+#     generates dictionary with word frequencies
+# 
+#     This function is not used in the main program, and was created for testing purposes
+# 
+#     >>> histogram('d d d d d')
+#     {'d': 5}
+#     """
+#     hist = {}
+#     text = text.replace('\r','\r ') # keeps the return, but still splits up the words
+#     text = text.split(' ')
+#     for word in text:
+#         word = word.strip(string.punctuation + string.whitespace + '1234567890?')
+#         word = word.lower()
+#         if word not in hist and word != '':
+#             hist[word] = 1
+#         elif word != '':
+#             hist[word] = hist[word] + 1
+#     return hist
+# 
+# 
+# def get_most_freq(hist, n):
+#     """
+#     finds the n most common words
+# 
+#     This function is not used in the main program, and was created for testing purposes
+# 
+#     >>> get_most_freq({'a': 5, 's': 3, 'd': 7},2)
+#     [['d', 'a'], [7, 5]]
+#     """
+#     top_n_words = []
+#     top_n_freqs = []
+#     for i in range(n):
+#         most_common = ''
+#         most_times = 0
+#         total = 0
+#         for key in hist:
+#             if key not in top_n_words:
+#                 num = hist[key]
+#                 if num > most_times:
+#                     most_times = num
+#                     most_common = key
+#         top_n_words.append(most_common)
+#         top_n_freqs.append(most_times)
+#     return [top_n_words, top_n_freqs]
 
 
 def get_random_word(hist):
@@ -92,9 +98,9 @@ def get_random_word(hist):
         total_words += hist[word]
     rand_num = random.randint(0,total_words)
     count = 0
-    default = ''
+    default = '...'
     for word in hist:
-        if count >= rand_num - 2: # to deal with incrementing from 0
+        if count >= rand_num: # to deal with incrementing from 0
             return word
         else:
             default = word
@@ -110,17 +116,19 @@ def get_suffix_dict(text, prefix):
         return suffix_dict_dict[prefix]
     else:
         suffix_hist = {}
-        text = text.replace('\r',' ')
-        text = text.replace('--', ' ')
-        text = text.split(' ')
+        # text = text.replace('\r',' ')
+        # text = text.split(' ')
+        # null = ''
+        # while null in text:
+        #     text.remove(null)
+        prefix = prefix.strip('1234567890' + '()\"\r\v\f-')
+        comp_prefix = prefix.split('\t') # splits the prefix into a list for easy manipulation
         for i in range(len(text) - 1):
-            word = text[i]
-            word = word.strip('1234567890' + '()\"\r\t\v\f\n-')
-            word = word.lower()
-            if i > 1:
-                words = [text[i - 1]]
+            text[i] = text[i].strip('1234567890' + '()\"\r\t\v\f-')
+            if i > 2:
+                test_prefix = [text[i - 1], text[i - 2]]
                 suffix = text[i]
-                if words == [prefix]:
+                if test_prefix == comp_prefix:
                     if suffix not in suffix_hist:
                         suffix_hist[suffix] = 1
                     else:
@@ -129,32 +137,40 @@ def get_suffix_dict(text, prefix):
         return suffix_hist
 
 
-def gen_chain(seed, length, text):
+def gen_chain(seed1, seed2, length, text):
     """
-    creates Marcov chain
+    creates Markov chain
     """
+    text = text.replace('\r','\r ')
+    text = text.split(' ')
+    null = ''
+    while null in text:
+        text.remove(null)
     chain = []
     for i in range(length):
-        chain.append(seed)
-        seed = get_random_word(get_suffix_dict(text, seed))
+        chain.append(seed1)
+        prefix = seed2 + '\t' + seed1
+        seed1 = seed2
+        seed2 = get_random_word(get_suffix_dict(text, prefix))
     return chain
 
 
-def marcovchain(seed, length, text):
+def markovchain(seed1, seed2, length, text):
     """
     this for my convenience
     """
-    chain = gen_chain(seed, length, text)
+    chain = gen_chain(seed1, seed2, length, text)
     result = ''
     for word in chain:
         result = result + word + ' '
     return result
 
 
-text = get_text('tale_of_two_cities.txt', 'http://www.gutenberg.org/files/98/98-0.txt')
+text = get_text('war_and_peace.txt')
 
 
-print(marcovchain('or', 100, text))
+print(markovchain('it', 'was', 100, text))
+
 
 import doctest
 doctest.testmod()
