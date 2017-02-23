@@ -1,4 +1,5 @@
 Kerry McConnaughay
+
 Project 3 Writeup and Reflection
 
 	I used Wikipedia as my data source and saved every page for each President of the United States. To analyze the word frequency of the pages, I used multiple functions together. I wanted to determine what the most frequent word is on each page so that I could try to apply that word to trends from the corresponding President’s time period. I  was interested in learning if there is a correlation between major issues of the time and the most frequent word in the article. 
