@@ -46,6 +46,16 @@ def data_load(sub):
     input_file.close()
     return reloaded_data, reloaded_scores
 
+def sentiment_load():
+    input_file = open('Sentiment.pickle', 'rb')
+    subreddits = pickle.load(input_file) #Reload subreddits
+    # print(reloaded_data)
+    means = pickle.load(input_file) # Reload averages
+    # print(reloaded_scores)
+    stds = pickle.load(input_file) # Reload standard deviations
+    input_file.close()
+    return subreddits,means,stds
+
 def data_sent_analyze(subreddit_names,numposts):
     
     analyzer = SentimentIntensityAnalyzer()
@@ -78,12 +88,19 @@ def data_sent_analyze(subreddit_names,numposts):
         sentiments_std.append(std_sentiment)
         sentiment_dict[sub] = ave_sentiment
         print('Sentiment analysis done for /r/', sub)
+    #Save the arrays
+    f = open('Sentiment.pickle', 'wb')
+    pickle.dump(subreddit_names,f)
+    pickle.dump(sentiments_mean,f)
+    pickle.dump(sentiments_std,f)
+    f.close()
+    #Print out sentiment dictionary
     print("sentiment dictionary is:",sentiment_dict)
     return sentiments_mean,sentiments_std,sentiment_dict
 
 def graph_stuff(subreddits,mean,std):
     ind = np.arange(len(subreddits))  # the x locations for the groups
-    width = 0.35       # the width of the bars
+    width = 0.75       # the width of the bars
 
     fig, ax = plt.subplots()
     colors = []
@@ -93,35 +110,48 @@ def graph_stuff(subreddits,mean,std):
             colors.append('b')
         else:
             colors.append('r')
-    rects1 = ax.bar(ind, mean, width, color=colors, yerr=std)
-
+    # rects1 = ax.bar(ind, mean, width, color=colors, yerr=std)
+    rects1 = ax.bar(ind, mean, width, color=colors)
     
     # rects2 = ax.bar(ind + width, women_means, width, color='y', yerr=women_std)
 
     # add some text for labels, title and axes ticks
     ax.set_ylabel('Sentiment of Subreddit')
     ax.set_title('Sentiment of Each Subreddit')
+    ttl = ax.title
+    ttl.set_position([.5, 1.05])
+    # fig.top(1.05)
     ax.set_xticks(ind)
-    ax.set_xticklabels(subreddits)
+    ax.set_xticklabels(subreddits, rotation=60, ha = 'right')
+    # ax.tick_params(pad=20)
+    fig.tight_layout()
 
     # ax.legend((rects1[0], rects2[0]), ('Men', 'Women'))
 
 
-    def autolabel(rects):
+    def autolabel(rects,values):
         """
         Attach a text label above each bar displaying its height
         """
-        for rect in rects:
-            height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
-                    '%d' % int(height),
-                    ha='center', va='bottom')
+        for i in range(len(rects)):
+            rect = rects[i]
+            val = mean[i]
+            if mean[i] > 0:
+                location = -1.75
+                height = rect.get_height()
+            else:
+                location = .5
+                height = -rect.get_height()
+            ax.text(rect.get_x() + rect.get_width()/2.,  location,
+                    '%.2f' % height,
+                    ha='center', va='bottom',rotation=90)
 
-    autolabel(rects1)
+    autolabel(rects1,mean)
     # autolabel(rects2)
 
     plt.show()
-
+    plt.savefig("Subreddit Sentiment Analysis")
+    
 
 def main():
     numposts=100
@@ -133,7 +163,8 @@ def main():
                   "politics","happy","TwoXChromosomes","TheRedPill","relationships",
                   "personalfinance","tifu"]
     # data_pull(subreddits,numposts)
-    sentiments_mean,sentiments_std,sentiment_dict = data_sent_analyze(subreddits,numposts)
+    # sentiments_mean,sentiments_std,sentiment_dict = data_sent_analyze(subreddits,numposts)
+    subreddits, sentiments_mean,sentiments_std = sentiment_load()
     graph_stuff(subreddits, sentiments_mean, sentiments_std)
 
 if __name__ == '__main__':
