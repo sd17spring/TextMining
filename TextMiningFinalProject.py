@@ -115,7 +115,7 @@ utilitarianism_hist = process_file('utilitarianism.pickle')
 #eliminates any word shorter than b and then determines the most common words of a dictionary (n amount)
 def top_words(dictionary,n,b):
     """
-    >>> top_words({'cat':1,'dog':1,'elephant':5,'soul':10,'jazz':20},3)
+    >>> top_words({'cat':1,'dog':1,'elephant':5,'soul':10,'jazz':20},3,2)
     [(5, 'elephant'), (10, 'soul'), (20, 'jazz')]
     """
     inverse_list = []
@@ -127,7 +127,7 @@ def top_words(dictionary,n,b):
         if len(i[1]) > b:
             cool_dict.append(i)
     new_list = sorted(cool_dict)
-    print(new_list[len(cool_dict)-n:])
+    #print(new_list[len(cool_dict)-n:])
     return new_list[len(cool_dict)-n:]
 
 #determine the words that are unique to each text (and that are the most common words)
@@ -164,21 +164,34 @@ def unique_words(a,b,c,d):
 
 def most_common_words(a,b,d,e,n,h):
     """
-    >>> most_common_words([(5,'a'),(10,'cat'),(10,'dog'),(2,'fish')],[(10,'a'),(20,'elephant'),(20,'fish'),(2,'car')],[(10,'fish'),(20,'pet'),(10,'car'),(5,'love')],[(20,'a'),(20,'truck'),(20,'truck'),(2,'death')],3)
-    (['cat', 'dog'],['elephant'],['pet'],['truck'])
+    >>> most_common_words({'a':5,'cat':10,'dog':10,'fish':2},{'a':10,'elephant':20,'fish':20,'car':2},{'fish':20,'pet':20,'car':10,'love':5},{'a':20,'truck':20,'truck':20,'death':2},3,2)
+    (['cat', 'dog'], ['elephant'], ['pet'], ['truck'])
     """
+    a_new =[]
+    b_new=[]
+    c_new =[]
+    d_new=[]
     a_list = top_words(a,n,h)
     b_list = top_words(b,n,h)
     #c_list = top_words(c,5)
     d_list = top_words(d,n,h)
     e_list = top_words(e,n,h)
-    print(a_list,b_list)
-    return unique_words(a_list, b_list, d_list, e_list) #returns a list of the lists of top n words
+    for i in a_list:
+        a_new.append(i[1])
+    for h in b_list:
+        b_new.append(h[1])
+    for k in d_list:
+        c_new.append(k[1])
+    for l in e_list:
+        d_new.append(l[1])
+    #print(a_list,b_list)
+    return unique_words(a_new,b_new,c_new,d_new)
+    #returns a list of the lists of top n words
 
-most_common_words(constitution_hist,communist_manifesto_hist,trotsky_hist,utilitarianism_hist,50,3)
+print(most_common_words(constitution_hist,communist_manifesto_hist,trotsky_hist,utilitarianism_hist,50,3))
 
 
 if __name__ == "__main__":
     import doctest
     #doctest.testmod()
-    #doctest.run_docstring_examples(top_words, globals(),verbose = True)
+    #doctest.run_docstring_examples(most_common_words, globals(),verbose = True)
