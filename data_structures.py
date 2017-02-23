@@ -8,17 +8,27 @@ import json
 class Article:
     """ Stores article data """
     def __init__(self, url, title, content = None):
+        """ Initialize a new Article object
+
+            url: the URL of the article
+            title: the title of the article
+            content: the pure-text (no HTML) content of the article
+        """
         self.url = url
         self.title = title
         self.content = content
 
 class Source:
-    """ Keeps track of articles associated with a source.
-
-        Name is the name of the source, and articles is a dictionary of
-        Article objects indexed by URL.
-    """
+    """ Keeps track of articles associated with a source. """
     def __init__(self, name, name_full, rss_url, content_class):
+        """ Initialize a new Source object
+
+            name: a shorthand name for the article (should be the same as the
+                key in the parent Source object's articles dictionary)
+            name_full: the full name of the article for labeling output
+            rss_url: the URL to the RSS feed XML
+            content_class: the CSS class of the div containing the article text
+        """
         self.name = name
         self.name_full = name_full
         self.rss_url = rss_url

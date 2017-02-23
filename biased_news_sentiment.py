@@ -1,4 +1,5 @@
-""" Analyzes the sentiment of articles from various biased news source.
+""" Analyzes the sentiment of articles from various biased news source and draws
+    a scatterplot comparing their positivity and negativity.
 
     Written by Kyle Combes for Software Design (Spring 2017) Mini Project 3
     at Olin College of Engineering.
@@ -7,7 +8,6 @@ from data_structures import *
 from data_fetcher import DataFetcher
 import matplotlib.pyplot as plt
 from text_analyzer import TextAnalyzer
-
 
 if __name__ == "__main__":
 
@@ -42,6 +42,7 @@ if __name__ == "__main__":
     for i, txt in enumerate(labels):
         ax.annotate(txt, (x[i]+0.0005,y[i]-0.0002), verticalalignment='center')
 
+    # Label the axes actually and show the plot
     plt.xlabel('Positivity')
     plt.ylabel('Negativity')
     plt.legend()

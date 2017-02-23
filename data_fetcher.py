@@ -1,5 +1,5 @@
 
-""" Scrapes the web for the Biased News Sentiment program.
+""" Scrapes the web and caches data to disk for the Biased News Sentiment program.
 
     Written by Kyle Combes for Software Design (Spring 2017) Mini Project 3
     at Olin College of Engineering.
@@ -10,11 +10,11 @@ import untangle
 import json
 from bs4 import BeautifulSoup
 from data_structures import *
+
 class DataFetcher:
 
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0'}
     FILE_PREFIX = 'data/'
-    RSS_FEED_FILENAME = 'rss_feeds.p'
 
     def fetch_latest_from_feeds(sources):
         """ Fetches the latest article URLs for each source, downloads any new
@@ -89,9 +89,6 @@ class DataFetcher:
             url = elem.link.cdata
             articles.append(Article(url, title))
         return articles
-
-    def scrape_page_for_links(url):
-        pass
 
     def fetch_rest_of_article(article, content_class):
         """ Takes an Article with a URL specified and downloads the content.
