@@ -20,7 +20,7 @@ Once the old data has been loaded and all the latest articles have been download
 
 My results surprised me. I expected to see more of a divide between left-wing and right-wing news outlets. However, as can be seen below, the points were fairly evenly interspersed. Running the test on different article sets shifted the location of some points but left others more or less the same.
 
-               Run 1                    |              Run 2
+               Run 1                    |   Run 2 <br> More articles downloaded and analyzed
 :--------------------------------------:|:-----------------------------------:
 ![Biased news comparison, first run](Results-1.png)  |  ![Biased news comparison, second run](Results-2.png)
 
