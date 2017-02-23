@@ -10,6 +10,8 @@ club sentiment anaylsis data for each of the EPL clubs.
 import twitter
 import wikipedia
 from bs4 import BeautifulSoup
+import warnings
+
 
 # Text Analyzer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -144,7 +146,7 @@ def save_tweets_texts(filename, players):
                 tweet_texts[player.name] = get_texts_from_player(player.name,
                                                                  START_TIME)
             except Exception:
-                pass #  when Exception occurs, just ignore the player.
+                pass  # when Exception occurs, just ignore the player.
     f = open(filename, 'wb')
     try:
         dump(tweet_texts, f)
@@ -183,8 +185,8 @@ def player_nltk_analysis(player_name, texts):
 
 
 def all_players_nltk_analysis(player_list, tweet_texts):
-    """s
-    Returns a dictionary with.
+    """
+    Returns a dictionary with
     key : player name
     value : individual player_nltk analysis [compound, neg, neu, pos]
     ex) {'Paul Pogba' : [0.8439, : 0.0, 0.248, 0.752]}
@@ -209,7 +211,8 @@ def save_clubs_dictionary(filename, players):
     CAUTION : This function isn't totally reliable
     (there might not exist any wikipedia page for cetain players).
     When an exception occurs, "unknown" become the value for the key.
-    CAUTION2 : THIS TAKES A LONG TIME
+    CAUTION2 : THIS MIGHT TAKE MORE THAN 10 MIUTES DUE TO SLOW RESPONSE RATE
+    OF WIKIPEDIA SERVER
     """
     clubs_dictionary = dict()
     for player in players:
@@ -249,19 +252,19 @@ def club_nltk_analysis(players_nltk_results, club_dictionary):
     ex) {ManU : [0,0,0,0],
          ManCity : [0,0,0,0]}
     """
+    club_analysis = dict()
     epl_clubs = ['AFC Bournemouth', 'Arsenal', 'Burnley', 'Chelsea',
                  'Crystal Palace', 'Everton', 'Hull City', 'Leicester City',
                  'Liverpool', 'Manchester City', 'Manchester United',
                  'Middlesbrough', 'Southampton', 'Stoke City', 'Sunderland',
                  'Swansea City', 'Tottenham Hotspur', 'Watford',
                  'West Bromwich Albion', 'West Ham United']
-    club_analysis = dict()
     for club in epl_clubs:
         club_analysis[club] = [0, 0, 0, 0]
     for player_name in players_nltk_results:
         for club in epl_clubs:
             # startswith method is used here for texts like..
-            # ex) 'Aresenal(on transfer from XX)'
+            # ex) Current Team : 'Aresenal(on transfer from XX)'
             if club_dictionary[player_name].startswith(club):
                 club_analysis[club][0] += players_nltk_results[player_name][0]
                 club_analysis[club][1] += players_nltk_results[player_name][1]
@@ -270,20 +273,25 @@ def club_nltk_analysis(players_nltk_results, club_dictionary):
     return club_analysis
 
 
-def sort_by_key(dictionary, key):
+def sorted_by_key(analysis_dictionary, list_index):
     """
-    Returns a list of EPL clubs by the order of "key" from club_nltk_analysis
-    keys : "compound, neg, neu, pos"
-    text_analysis dictionary
+    Returns a list of EPL clubs by the order of elements in
+    specified "list_index" in "key dictionary" from club_nltk_analysis
+    key: 0 (compound),1(neg),2(neu),3(pos)
     """
-    pass
+    return sorted(analysis_dictionary.keys(),
+                  key=lambda k: analysis_dictionary[k][list_index],
+                  reverse=True)
 
 
 if __name__ == '__main__':
     doctest.testmod()
+
+    # mutes deprecationWarning when using BeautifulSoup Package
+    warnings.simplefilter("ignore", DeprecationWarning)
     # --------------------------------------------------------------------------
     # Part 0 -> Credentials for Twitter API Access
-    credentials = get_credentials("keys.txt")
+    credentials = get_credentials("keys.txt")  # Twitter API Credentials
     CONSUMER_KEY = credentials[0]
     CONSUMER_SECRET = credentials[1]
     ACCESS_TOKEN_KEY = credentials[2]
@@ -340,6 +348,10 @@ if __name__ == '__main__':
         save_clubs_dictionary(clubs_data, all_players)
     clubs_dict = load_clubs_dictionary(clubs_data)
     club_analysis_results = club_nltk_analysis(nltk_results, clubs_dict)
-
     # --------------------------------------------------------------------------
-    # Part 6 -> Regroups the NLTK results by EPL Clubs.
+    # Part 6 -> Displays results sorted by different sentiments of NLTK
+    #           Keys : compound, neg, neu, pos
+    print(sorted_by_key(club_analysis_results, 0))  # key = compound
+    print(sorted_by_key(club_analysis_results, 1))  # key = neg
+    print(sorted_by_key(club_analysis_results, 2))  # key = neu
+    print(sorted_by_key(club_analysis_results, 3))  # key = pos
