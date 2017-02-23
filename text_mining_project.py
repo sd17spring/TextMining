@@ -1,5 +1,6 @@
 import pickle
 import string
+import random
 
 input_file = open('beowulf_text.pickle', 'rb')
 beowulf_reloaded = pickle.load(input_file)
@@ -10,6 +11,7 @@ input_file2 = open('aenid_text.pickle', 'rb')
 aenid_reloaded = pickle.load(input_file2)
 aenid_reloaded = aenid_reloaded[545:-19100]
 
+both_texts = aenid_reloaded + beowulf_reloaded
 text = 'Hello cruel world \n Why are people cruel \n I do not love the world \n Why are we here'
 prefix_length = 1
 
@@ -20,7 +22,7 @@ def process_file(text):
     line_hangover = []
     for line in text.splitlines():
         line_hangover = process_line(line, hist, line_hangover, prefixes_dict)
-    print(prefixes_dict)
+    write_verse(hist, prefixes_dict)
     return hist
 
 
@@ -44,12 +46,26 @@ def process_prefixes(extended_line, prefixes_dict):
     while count < len(extended_line)-prefix_length-1:
         prefix = tuple(extended_line[count:count+prefix_length])
         suffix = extended_line[count+prefix_length],
-        prefixes_dict[prefix] = prefixes_dict.get(prefix, tuple()) + (suffix)
+        prefixes_dict[prefix] = prefixes_dict.get(prefix, tuple()) + suffix
         count += 1
 
 
-def different_words(hist):
-    return len(hist)
+def write_verse(hist, prefixes_dict):
+    new_text = ''
+    prefix = ['love']
+    print(prefixes_dict)
+    # for i in range(prefix_length):
+    #     prefix.append(random.choice(list(hist.keys())))
+    for i in range(10):
+        if prefixes_dict[tuple(prefix)]:
+            options = prefixes_dict[tuple(prefix)]                               # DOES NOT ACCOUNT FOR THE LAST WORD
+        else:
+            break
+        next_word = random.choice(options)
+        new_text = new_text + prefix[0] + ' '
+        prefix.pop(0)
+        prefix.append(next_word)
+    print(new_text)
 
 
 def most_common(hist):
