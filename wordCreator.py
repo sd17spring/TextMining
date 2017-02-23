@@ -2,13 +2,18 @@ import numpy as np
 import random
 
 class WordCreator(object):
-    def __init__(self, filename):
+    def __init__(self, filename=None, wordList=None):
         """
         Initializes variables in WordCreator object
         Creates Transition matrix and normalizes it
         """
-        self.txtFile = open(filename, 'r')
-        self.transitions = np.zeros([27, 27])
+        if filename:
+            self.txtFile = open(filename, 'r')
+            self.wordList = None
+        else:
+            self.txtFile = None
+            self.wordList = wordList
+        self.transitions = np.zeros([255, 255])
         self.sumList = []
         self.maxLetters = 0
         self.minLetters = 0
@@ -21,10 +26,15 @@ class WordCreator(object):
         Returns the max number of letters in a word in the text file
         """
         currentMax = 0
-        self.txtFile.seek(0)
-        for word in self.txtFile:
-            if len(word) >= currentMax:
-                currentMax = len(word)
+        if self.txtFile:
+            self.txtFile.seek(0)
+            for word in self.txtFile:
+                if len(word) >= currentMax:
+                    currentMax = len(word)
+        else:
+            for word in self.wordList:
+                if len(word) >= currentMax:
+                    currentMax = len(word)
         return currentMax
 
     def getMinLetters(self):
@@ -32,10 +42,15 @@ class WordCreator(object):
         Returns the minimum number of letters in a word in the text file
         """
         currentMin = 10000
-        self.txtFile.seek(0)
-        for word in self.txtFile:
-            if len(word) < currentMin:
-                currentMin = len(word)
+        if self.txtFile:
+            self.txtFile.seek(0)
+            for word in self.txtFile:
+                if len(word) <= currentMin:
+                    currentMin = len(word)
+        else:
+            for word in self.wordList:
+                if len(word) <= currentMin:
+                    currentMin = len(word)
         return currentMin
 
     def setTransitions(self):
@@ -46,17 +61,20 @@ class WordCreator(object):
         Index m, n represents the probability that m transitions to n
         Index 27 represents a space input
         """
-        self.txtFile.seek(0)
-        for line in self.txtFile:
-            line = line.lower()
-            for i in range(len(line)-2):
-                xInd = ord(line[i])-ord('a')
-                yInd = ord(line[i+1]) - ord('a')
-                if line[i] == ' ':
-                    self.transitions[26][yInd] += 1
-                elif line[i+1] == ' ':
-                    self.transitions[xInd][26] += 1
-                else:
+        if self.txtFile:
+            self.txtFile.seek(0)
+            for line in self.txtFile:
+                line = line.lower()
+                for i in range(len(line)-2):
+                    xInd = ord(line[i])
+                    yInd = ord(line[i+1])
+                    self.transitions[xInd][yInd] += 1
+        if self.wordList:
+            for line in self.wordList:
+                line = line.lower()
+                for i in range(len(line)-2):
+                    xInd = ord(line[i])
+                    yInd = ord(line[i+1])
                     self.transitions[xInd][yInd] += 1
         self.normalizeTransitions()
 
@@ -127,26 +145,36 @@ class WordCreator(object):
         lastVal = 0
         for i in range(len(ranges)):
             if lastVal < randLetterIndex and randLetterIndex <= ranges[i]:
-                return chr(ord('a') + indices[i])
+                return chr(indices[i])
             lastVal = ranges[i]
 
+    def genWord(self, n):
+        """
+        Generates random word based on transition list of length n
+        Returns a word (word)
+        """
+        word = []
+        worLen = n
+        normList, totalChar = self.norm(self.sumList)
+        word.append(self.getWeightedLetter(normList, totalChar))
+        for i in range(wordLen-1):
+            letterIndex = ord(word[i])
+            word.append(self.getWeightedLetter(self.transitions[letterIndex], self.sumList[letterIndex]))
+        return ''.join(word)
 
-    def genWord(self):
+    def genRandWord(self):
         """
         Generates random word based on transition list
         Returns a word (word)
         """
-        wordLen = random.randint(4, self.maxLetters)
+        wordLen = random.randint(self.minLetters, self.maxLetters)
         word = []
         normList, totalChar = self.norm(self.sumList)
         word.append(self.getWeightedLetter(normList, totalChar))
-        for i in range(wordLen):
-            if not word[i] == ' ':
-                letterIndex = ord(word[i]) - ord('a')
-            else:
-                letterIndex = 27
+        for i in range(wordLen-1):
+            letterIndex = ord(word[i])
             word.append(self.getWeightedLetter(self.transitions[letterIndex], self.sumList[letterIndex]))
         return ''.join(word)
 
     def __main__(self):
-        print("Generated word is %s" % self.genWord())
+        print("Generated word is %s" % self.genRandWord())
