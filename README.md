@@ -11,7 +11,7 @@ I combined two books, Robinson Crusoe and Herland, and used a Markov Chain to ge
   I chose to use a Markov Chain to create sentence from a combination of the books Herland and Robinson Crusoe because both books were written in the early 18th century and document men on a journey. The interesting piece about these two texts is that the journeys of these men take place in very different contexts. Robinson Crusoe is stranded on an island and the book focuses on his struggle to conquer his environment. On the other hand, Herland tells the story of a group of men who journey into the unknown in an attempt to find an undiscovered all female society and later are imprisoned by the women until they learn more about the world. Herland focuses on the themes of love and the definition of femininity. 
 	I thought that because these two books both are about men on journeys, but with very different themes, the sentences generated randomly would be interesting and weird. See a smattering below.
   
-`<addr>`in cold like this in time as i found for.`<addr>`
+"in cold like this in time as i found for."
 
 “great forests looked round me no effort applied myself a quarter of my head for he called my strength the.”
 “creatures were armed we being murdered and all good things.”
