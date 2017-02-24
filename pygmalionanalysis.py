@@ -6,7 +6,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 def setup():
     import requests
     shaw_full_text = requests.get('http://www.gutenberg.org/cache/epub/3825/pg3825.txt').text
-    print(shaw_full_text)
+    # print(shaw_full_text)
     import pickle
     # Save data to a file (will be part of your data fetching script)
     f = open('shaw_texts.pickle', 'wb')
@@ -42,7 +42,10 @@ def setup_functionality():
     # print(Higgins_lines)
 
 def Sentinment_Anlyis(someone_lines):
-    analyzer = SentimentIntensityAnalyzer(someone_lines)
+    # someone_lines = ['bob is good', 'bob is bad']
+    # print('SOMEONES LINES')
+    #print(someone_lines)
+    analyzer = SentimentIntensityAnalyzer()
     #total_score = []
     someone_neu=[]
     someone_pos=[]
@@ -51,9 +54,9 @@ def Sentinment_Anlyis(someone_lines):
     for sentence in someone_lines:
         scores = analyzer.polarity_scores(sentence)
         someone_neu.append(scores['neu'])
-        someone_pos.append(score['pos'])
-        someone_neg.append(score['neg'])
-        someone_cmpd.append(score['compound'])
+        someone_pos.append(scores['pos'])
+        someone_neg.append(scores['neg'])
+        someone_cmpd.append(scores['compound'])
 
 
         #print(Freddy_neu)
@@ -78,12 +81,13 @@ def Sentinment_Anlyis(someone_lines):
 # buf = io.StringIO(copy_of_texts_from_pickel)
 
 def analyze_all_lines():
-#if __name__ == '__main__':
     #setup()
     a = setup_functionality()
-    b=a[1]
-    print(b)
-    Sentinment_Anlyis(b)
+    #b=a[2]
+    # print(b)
+    Sentinment_Anlyis(a[0])
+    Sentinment_Anlyis(a[1])
+    Sentinment_Anlyis(a[2])
     # Sentinment_Anlyis(Liza_lines)
     # Sentinment_Anlyis(Freddy_lines)
 
