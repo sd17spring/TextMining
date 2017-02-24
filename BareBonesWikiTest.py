@@ -230,16 +230,18 @@ def randlink(startLink, numLinks, paragraph_link_prefer = False):
     return Titles
 
 
-def wikiFind(startLink, numLinks, langs, target, disallowedkeys):
+def wikiFind(start, numLinks, langs, target, disallowedkeys):
     i = 0
-    nextlink = startLink #Make Start Link Next Links
+    linkprefix = "https://en.wikipedia.org" # Link prefix for every link to be added to
+    target_link_suffix = "/wiki/"+"_".join(target.split())
+    target_link = linkprefix+target_link_suffix #Target links
+    start_link_suffix = "/wiki/"+"_".join(start.split())
+    start_link = linkprefix+start_link_suffix
+    nextlink = start_link #Make Start Link Next Links
     LinkList = [] #Instantiate list of links clicked
     #lnk_names = [] #Text names of links
     checkList = []
     Titles = [] # Instantiate list of titles
-    linkprefix = "https://en.wikipedia.org" # Link prefix for every link to be added to
-    target_link_suffix = "/wiki/"+"_".join(target.split())
-    target_link = linkprefix+target_link_suffix #Target links
 
     #Parse Target Link
 
@@ -247,7 +249,7 @@ def wikiFind(startLink, numLinks, langs, target, disallowedkeys):
     #print(target_txt)
     word_ls = [x for x in strip_punctuation(target_txt).split() if len(x) > 2] # list of words in target html
     freq_target = Counter(word_ls) #Frequency of words in target html
-    print(freq_target)
+    #print(freq_target)
     targetwordsnorm = [x for x in strip_punctuation(target).split()]
     targetwords = [x.lower() for x in targetwordsnorm]
     #target_title_length = len(targetwords)
@@ -283,7 +285,7 @@ def wikiFind(startLink, numLinks, langs, target, disallowedkeys):
                         #print(item[0] + " was deleted")
                     except:
                         print(item[0] + " was already deleted")
-    print(freq_sort_dict)
+    #print(freq_sort_dict)
 
     ignore_txt = ''
     while i < numLinks:
@@ -485,6 +487,9 @@ Xhosa 	XH   US  or  and"""
 
 langs = langlist.split()
 disallowedkeys = ["many","use", "such", "other", "first"]
-start = "https://en.wikipedia.org/wiki/Selling"
-wikiFind(start, 45, langs, "Swaggering", disallowedkeys)#, disallowedkeys)
+while True:
+    start = input("Enter Start Title (Capitolize): ")
+    end = input("Enter End Title (Capitolize): ")
+    wikiFind(start, 45, langs, end, disallowedkeys)#, disallowedkeys)
+
 #randlink(start, 10, paragraph_link_prefer = True)

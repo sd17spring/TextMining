@@ -3,3 +3,6 @@ tagged_keys = nltk.pos_tag("4chan reddit".split())
 print(tagged_keys)
 #s = 'hello world!'
 #print(s[:-1])
+lnks = ['a', 'bbb', 'cc', 'dd']
+lnks.sort(key = len)
+print(lnks)
