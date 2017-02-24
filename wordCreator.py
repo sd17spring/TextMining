@@ -2,22 +2,23 @@ import numpy as np
 import random
 
 class WordCreator(object):
-    def __init__(self, filename=None, wordList=None):
+    def __init__(self, filename=None, words=None):
         """
         Initializes variables in WordCreator object
         Creates Transition matrix and normalizes it
+        Takes string path (filename), or string (words)
         """
 
         #Check whether input was text file or list of words
         if filename:
             self.txtFile = open(filename, 'r')
-            self.wordList = None
+            self.words = None
         else:
             self.txtFile = None
-            self.wordList = wordList
+            self.words = words
 
         #Initialize attributes
-        self.transitions = np.zeros([255, 255])
+        self.transitions = np.zeros([256, 256])
         self.sumList = []
         self.minLetters = self.getMinLetters()
         self.maxLetters = self.getMaxLetters()
@@ -40,14 +41,16 @@ class WordCreator(object):
                 #Find longest word
                 if len(word) >= currentMax:
                     currentMax = len(word)
-        #Else read from word list
         else:
-            #Loop through list
-            for word in self.wordList:
-                #Find longest word
-                if len(word) >= currentMax:
-                    currentMax = len(word)
-        #Return length of longest word
+            currentMax = 15
+        #Else read from word list
+        # else:
+        #     #Loop through list
+        #     for word in self.words:
+        #         #Find longest word
+        #         if len(word) >= currentMax:
+        #             currentMax = len(word)
+        # #Return length of longest word
         return currentMax
 
     def getMinLetters(self):
@@ -66,13 +69,16 @@ class WordCreator(object):
                 if len(word) <= currentMin:
                     currentMin = len(word)
         #Else use word list
-        else:
-            #Loop through word list
-            for word in self.wordList:
-                #Find shortest word
-                if len(word) <= currentMin:
-                    currentMin = len(word)
+        # else:
+        #     #Loop through word list
+        #     for word in self.words:
+        #         #Find shortest word
+        #         if len(word) <= currentMin:
+        #             currentMin = len(word)
         #return shortest word length
+        else:
+            currentMin = 3
+
         return currentMin
 
     def setTransitions(self):
@@ -91,21 +97,20 @@ class WordCreator(object):
             for line in self.txtFile:
                 line = line.lower()
                 #Increment transition matrix ith letter, i+1th letter by 1
-                for i in range(len(line)-2):
+                for i in range(len(line)-1):
                     xInd = ord(line[i])
                     yInd = ord(line[i+1])
-                    self.transitions[xInd][yInd] += 1
+                    if not(xInd > 255 or yInd > 255):
+                        self.transitions[xInd][yInd] += 1
         #Else use word list
-        if self.wordList:
+        if self.words:
             #Loop through words
-            for line in self.wordList:
-                line = line.lower()
+            for i in range(len(self.words)-1):
                 #Increment transition matrix ith letter, i+1th letter by 1
-                for i in range(len(line)-2):
-                    xInd = ord(line[i])
-                    yInd = ord(line[i+1])
+                xInd = ord(self.words[i])
+                yInd = ord(self.words[i+1])
+                if not(xInd > 255 or yInd > 255):
                     self.transitions[xInd][yInd] += 1
-
         #Normalize Matrix and get totals of each character
         self.normalizeTransitions()
 
@@ -184,30 +189,30 @@ class WordCreator(object):
         Returns list of selection ranges (ranges) and their indexes
         in the original list (indices)
         """
-            #Initialize method variables
-            lastVal = 0
-            tempList = self.copyList(probList)
-            ranges = []
-            indices = []
+        #Initialize method variables
+        lastVal = 0
+        tempList = self.copyList(probList)
+        ranges = []
+        indices = []
 
-            #Loop through list of probabilities
-            for i in range(len(tempList)):
-                #If the current index is non-zero
-                if tempList[i]:
-                    #Un-Normalize the value
-                    tempList[i] = tempList[i] * summation
+        #Loop through list of probabilities
+        for i in range(len(tempList)):
+            #If the current index is non-zero
+            if tempList[i]:
+                #Un-Normalize the value
+                tempList[i] = tempList[i] * summation
 
-                    #Add the running sum to it
-                    ranges.append(lastVal + tempList[i])
+                #Add the running sum to it
+                ranges.append(lastVal + tempList[i])
 
-                    #Append it to the return list
-                    indices.append(i)
+                #Append it to the return list
+                indices.append(i)
 
-                    #Add the value to un-normed value to the running sum
-                    lastVal += tempList[i]
+                #Add the value to un-normed value to the running sum
+                lastVal += tempList[i]
 
-            #Return the list of ranges and the original indices of the ranges
-            return ranges, indices
+        #Return the list of ranges and the original indices of the ranges
+        return ranges, indices
 
 
     def getWeightedLetter(self, probList, inSum):
@@ -217,6 +222,7 @@ class WordCreator(object):
         Generates random letter based on how the letter is weighted in the list
         returns that number
         """
+        print(inSum)
         #Get probability ranges and their indices
         ranges, indices = self.getRanges(probList, inSum)
         randLetterIndex = random.randint(1, inSum)
@@ -229,6 +235,7 @@ class WordCreator(object):
                 return chr(indices[i])
             #Reinitialize last value
             lastVal = ranges[i]
+
 
     def genWord(self, n):
         """
@@ -249,7 +256,17 @@ class WordCreator(object):
         for i in range(wordLen-1):
             #append random character based on the previous character
             letterIndex = ord(word[i])
-            word.append(self.getWeightedLetter(self.transitions[letterIndex], self.sumList[letterIndex]))
+            flag = True
+            subtractor = 1
+            while flag:
+                if self.sumList[letterIndex]:
+                    word.append(self.getWeightedLetter(self.transitions[letterIndex], self.sumList[letterIndex]))
+                    flag = False
+                else:
+                    letterIndex  = ord(word[i-subtractor])
+                    subtractor+=1
+
+
 
         #return word as a string
         return ''.join(word)
@@ -274,4 +291,4 @@ class WordCreator(object):
         Main function. Generates random word
         """
 
-        print("Generated word is %s" % self.genRandWord())
+        print("Generated phrase is %s" % self.genRandWord())

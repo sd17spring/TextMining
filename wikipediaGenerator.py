@@ -3,7 +3,7 @@ import wikipedia
 python = None
 
 python = wikipedia.page('Pythonidae')
-pythonLinks = python.links
+pythonContent = python.content
 
-pythonWordGen = WordCreator(wordList=pythonLinks)
+pythonWordGen = WordCreator(words=pythonContent)
 print(pythonWordGen.genWord(150))
