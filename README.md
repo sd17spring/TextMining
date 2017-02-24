@@ -14,16 +14,26 @@ I combined two books, Robinson Crusoe and Herland, and used a Markov Chain to ge
 "in cold like this in time as i found for."
 
 “great forests looked round me no effort applied myself a quarter of my head for he called my strength the.”
+
 “creatures were armed we being murdered and all good things.”
+
 "I made snares to son i inquired if burglars try to believe."
+
 "so that they were decimated by the wall and begged lazily."
+
 "to take much better import some merchants for the guns of bread i that price was by this savage that which i."
+
 "approach seemed to mere nature should happen that went in further into the person but this line i must have a matter."
+
 "cautiously and wisdom justice of cats were if i did not at my condition i sat down immediately driven by."
+
 "remedy for as follows three killed one word i could come that and that if founded on the country seat which i was ashore but did not so that in less a habitation."
 "as it to lie down and loaded my pistols with my story at it to me governor what became but the knees and pointing to us if i asked him what he meant."
+
 "to sleep had a pitch of labor too with me for home in the way to this retreat i slept all that part i hastened to their darts or deliverance which."
-### 
+
+### Reflection
+  I ended up finding that the themes of the two books did not really play much into the content of the quotes, however if I were to do this project again I would perform a sentiment analysis and generate sentences based on the sentiment I discovered in each text. I think I could have done a better job of using unit testing because I really just didn’t use any since the functions that I created used random. To test my code I used print statements along the way to ensure that it was doing what I wanted it to do.
 
 
 
