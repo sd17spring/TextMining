@@ -19,7 +19,7 @@ Some of the downfalls of the algorithm and program is that it can very easily be
 
 
 Examples of program at work:
-=====================================================
+--
 Enter Start Title (Capitolize): Swagger
 Enter End Title (Capitolize): Electronic Dance Music
 len: 81663  /  107072
@@ -42,7 +42,7 @@ Retrieving from Files
 
 Finished!
 Found Electronic Dance Music!!
-====================================================
+--
 
 Enter Start Title (Capitolize): Pear
 Enter End Title (Capitolize): Grape
@@ -58,7 +58,7 @@ Searched Word: grape	86
 
 Finished!
 Found Grape!!
-====================================================
+--
 
 Enter Start Title (Capitolize): Quantum Mechanics
 Enter End Title (Capitolize): Philosophy
@@ -74,7 +74,7 @@ Retrieving from Files
 
 Finished!
 Found Philosophy!!
-====================================================
+--
 
 Enter Start Title (Capitolize): Michigan
 Enter End Title (Capitolize): Discrete Mathematics
@@ -93,7 +93,7 @@ Retrieving from Files
 
 Finished!
 Found Discrete Mathematics!!
-====================================================
+--
 
 Enter Start Title (Capitolize): Great Red Spot
 Enter End Title (Capitolize): Cardistry
@@ -105,7 +105,7 @@ Searched Word: book	2
 
 Finished!
 Couldn't find anymore links in BookJupiter
-===================================================
+--
 
 
 ## Reflection
