@@ -230,7 +230,7 @@ def randlink(startLink, numLinks, paragraph_link_prefer = False):
     return Titles
 
 
-def wikiFind(startLink, numLinks, langs, target):
+def wikiFind(startLink, numLinks, langs, target, disallowedkeys):
     i = 0
     nextlink = startLink #Make Start Link Next Links
     LinkList = [] #Instantiate list of links clicked
@@ -245,29 +245,44 @@ def wikiFind(startLink, numLinks, langs, target):
 
     target_txt = txtlist(target_link).lower() #list of text in target html
     #print(target_txt)
-    word_ls = [x for x in target_txt.split() if len(x) > 1] # list of words in target html
+    word_ls = [x for x in strip_punctuation(target_txt).split() if len(x) > 2] # list of words in target html
     freq_target = Counter(word_ls) #Frequency of words in target html
-    targetwords = [x.lower() for x in strip_punctuation(target).split()]
+    print(freq_target)
+    targetwordsnorm = [x for x in strip_punctuation(target).split()]
+    targetwords = [x.lower() for x in targetwordsnorm]
     #target_title_length = len(targetwords)
     for s in targetwords:
-        freq_target[s.lower()] = freq_target.get(s.lower(), 0) + 10
+        if len(s) > 2: freq_target[s.lower()] = freq_target.get(s.lower(), 0) + 30
     #req_target_keys = freq_target.keys()
     #print(type(freq_sort_dict))
     #print(type(freq_sort_dict[0::2]))
     tagged_keys = nltk.pos_tag(freq_target.keys())
 
-    approved_word_types = ["NN","NNP","NP","NNS"]
+    approved_word_types = ["NN","NNP","NP","NNS","JJ"]
     for tup in tagged_keys:
-        #if tup[0].lower() in targetwords:
-        #    continue
-        if not tup[1] in approved_word_types:
+        if tup[0] in targetwords:
+            ind=targetwords.index(tup[0])
+            if not targetwordsnorm[ind].islower():
+                continue
+        if not tup[1] in approved_word_types or tup[0] in disallowedkeys:
             del freq_target[tup[0]]
 
     freq_sort_dict=sorted(freq_target.items(), key=operator.itemgetter(1), reverse=True)
     for item in freq_sort_dict:
         for item2 in freq_sort_dict:
-            if item[0] == item2[0]+'s':
-                freq_sort_dict.remove(item2)
+            if item[0] == item2[0]+'s'or item[0] == item2[0][:-1]+'ies':
+                if item[1] > item2[1]:
+                    try:
+                        freq_sort_dict.remove(item2)
+                        #print(item2[0] + " was deleted")
+                    except:
+                        print(item2[0] + " was already deleted")
+                else:
+                    try:
+                        freq_sort_dict.remove(item)
+                        #print(item[0] + " was deleted")
+                    except:
+                        print(item[0] + " was already deleted")
     print(freq_sort_dict)
 
     ignore_txt = ''
@@ -296,7 +311,7 @@ def wikiFind(startLink, numLinks, langs, target):
 
 
         titlefind = souporig.findAll('h1', attrs={'class': re.compile("firstHeading")})
-        title = (titlefind[0].get_text())
+        title = strip_punctuation(titlefind[0].get_text()) #should strip punctuation or no????!!!?!?!?
 
         print(str(i) + '\t' + title + "\n")
         links = {}
@@ -320,7 +335,7 @@ def wikiFind(startLink, numLinks, langs, target):
         Titles.append(title)
         savetxt(title, soup.get_text())
         savehtml(title, rd)
-        if title.lower() == target.lower():
+        if title.lower() == strip_punctuation(target).lower():
             print('Finished!')
             print('Found ' + target + '!!')
             return Titles
@@ -349,11 +364,11 @@ def wikiFind(startLink, numLinks, langs, target):
             if len(links) > 0:
                 #Algorithm for deciding next link
                 for txt, freq in freq_sort_dict: #Iterate through freq_target by word frequency
-                    if txt == ignore_txt or freq < 3:
+                    if txt == ignore_txt or freq < 2:
                         continue
                     for lnk_comp, lnk in links.items(): #Iterate randomly through list of links
                         for lnk_txt in lnk_comp.split(): # Split links into singular words and iterate through those
-                            if txt == lnk_txt.lower() and not lnk in LinkList: #If txt and linktxt are the same and the link isn't the same
+                            if txt == strip_punctuation(lnk_txt).lower() and not lnk in LinkList: # SHOULD I STRIP PUCTUATION??#If txt and linktxt are the same and the link isn't the same
                                 lnks.append(lnk)
                                 checkList.append(txt)
                                 found = True
@@ -469,7 +484,7 @@ Welsh 	CY
 Xhosa 	XH   US  or  and"""
 
 langs = langlist.split()
-#disallowedkeys = ["are","the","and","with", "that", "from", "made", "this", "list", "which", "about", "be", "have"]
-start = "https://en.wikipedia.org/wiki/Albatross"
-wikiFind(start, 30, langs, 'Golf')#, disallowedkeys)
+disallowedkeys = ["many","use", "such", "other", "first"]
+start = "https://en.wikipedia.org/wiki/Selling"
+wikiFind(start, 45, langs, "Swaggering", disallowedkeys)#, disallowedkeys)
 #randlink(start, 10, paragraph_link_prefer = True)

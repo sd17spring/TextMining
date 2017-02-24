@@ -1,3 +1,5 @@
 import nltk
-tagged_keys = nltk.pos_tag("those are some fun activities".split())
+tagged_keys = nltk.pos_tag("4chan reddit".split())
 print(tagged_keys)
+#s = 'hello world!'
+#print(s[:-1])
