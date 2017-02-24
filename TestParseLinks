@@ -1,0 +1,26 @@
+import pickle as pk
+#import lxml.etree
+import re
+import urllib.parse as ulps
+import urllib.request as ulrq
+import bs4
+
+def loadtxt(filename):
+    # Load data from a file (will be part of your data processing script)
+    input_file = open('files//' + filename + '.pickle','rb')
+    loaded = pk.load(input_file)
+    return loaded
+
+
+title = "Mass production"
+
+imp = loadtxt(title.replace(" ",""))
+text = str(imp)
+print(text)
+
+pat = r'Mass'
+match = re.match(pat,'Mass derp Mass')
+print(match.group(0))
+#regex = re.findall(pat, text)
+#print(regex)
+#re.compile(r'^!(\[|\]|\||\{|\}|\*)')

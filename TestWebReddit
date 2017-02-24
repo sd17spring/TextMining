@@ -1,0 +1,15 @@
+import pickle
+import praw
+
+r = praw.Reddit(user_agent='my_cool_application')
+submissions = r.get_subreddit('opensource').get_hot(limit=5)
+[str(x) for x in submissions]
+
+
+"""f = open('dickens_texts.pickle','w')
+pickle.dump(charles_dickens_texts,'f')
+f.close()
+
+# Load data from a file (will be part of your data processing script)
+input_file = open('dickens_texts.pickle','r')
+reloaded_copy_of_texts = pickle.load(input_file)"""

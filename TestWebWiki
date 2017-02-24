@@ -1,0 +1,72 @@
+import pickle as pk
+#import lxml.etree
+import re
+import urllib.parse as ulps
+import urllib.request as ulrq
+import bs4
+
+def savetxt(filename, data):
+    f = open('files//' + filename + '.pickle','wb')
+    pk.dump(data, f)
+    f.close()
+
+def loadtxt(filename):
+    # Load data from a file (will be part of your data processing script)
+    input_file = open('files//' + filename + '.pickle','rb')
+    loaded = pk.load(input_file)
+    return loaded
+
+#prop=links%7Crevisions&titles=Mass+production&redirects=1&pllimit=500&rvprop=content
+
+title = "Mass production"
+
+#params = { "format":"xml", "action":"query", "prop":"links%7Crevisions","pllimit":"500", "rvprop":"content" } #Sets up list of items
+#params["titles"] = "API|%s" % ulps.quote(title.encode("utf8"))
+#qs = "&".join("%s=%s" % (k, v)  for k, v in params.items())
+#url = "http://en.wikipedia.org/w/api.php?%s" % qs
+params = { "format":"xml", "action":"query", "prop":"revisions","rvprop":"content" } #Sets up list of items
+params["titles"] = "API|%s" % ulps.quote(title.encode("utf8"))
+qs = "&".join("%s=%s" % (k, v)  for k, v in params.items())
+url = "http://en.wikipedia.org/w/api.php?%s" % qs
+params1 = { "format":"json", "action":"query", "prop":"links","pllimit":"500" } #Sets up list of items
+params1["titles"] = "API|%s" % ulps.quote(title.encode("utf8"))
+qs1 = "&".join("%s=%s" % (k, v)  for k, v in params1.items())
+url1 = "http://en.wikipedia.org/w/api.php?%s" % qs1
+#print(url)
+webpage = ulrq.urlopen(url)
+webpage1 = ulrq.urlopen(url1)
+
+rd = webpage.read()
+rd1 = webpage1.read()
+print(rd)
+print(str(rd1,'utf-8'))
+
+
+soup = bs4.BeautifulSoup(rd, "html.parser")
+soup1 = bs4.BeautifulSoup(rd1, "html.parser")
+
+print(soup1)
+print(soup.get_text())
+
+#for item in soup.find_all(attrs={'class': 'article-additional-info'}):
+#for link in item.find_all('a'):
+#print link.get('href')
+
+#savetxt(title.replace(" ",""), soup.get_text)
+
+
+#print(soup)
+
+
+#for node in soup.findAll('html'):
+#    print u''.join(node.findAll(text=True)).encode('utf-8')
+#tree = lxml.etree.parse(ulrq.urlopen(url))
+#print(tree)
+#revs = tree.xpath('//rev')
+#print(revs)
+
+#print("The Wikipedia text for", title, "is")
+#print(len(revs))
+
+#for sec in revs:
+#    print(sec.text)
