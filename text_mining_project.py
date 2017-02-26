@@ -12,16 +12,15 @@ sonnets_reloaded = sonnets_reloaded[775:-19150]
 
 input_file6 = open('petrarch.pickle', 'rb')
 petrarch_reloaded = pickle.load(input_file6)
-petrarch_reloaded = petrarch_reloaded[450000:-40855]
+petrarch_reloaded = petrarch_reloaded[450000:-240855]
 
 test_text = 'Hello cruel world \n Why are people cruel \n I do not love the world \n Why are we here'
-bad_punctuation = '[]*()_'
+bad_punctuation = '[]*()"_'
 good_punctuation = '.:,;!?'
 prefix_length = 2
 
-
 def process_file(text):
-    '''basically a 'run' file. initializes the dictionaries and some variables.
+    '''basically a 'run' function. initializes the dictionaries and some variables.
     splits the text into lines and does other functions with each line only if
     the line is trivial (isn't too short to constitute a line).
     '''
