@@ -1,0 +1,36 @@
+Ilya Besancon
+Software Design Spring 2017
+MP3: Text Mining Reflection
+
+1) Project Overview:
+
+I used a twitter api to look at Chef Gordon Ramsay's last 200 tweets and used vader sentiment analysis.
+I was curious to look at if his tweets were generally positive or negative.
+
+2) Implementation
+
+From a system architectural perspective, this code is pretty simple. I used the twitter library,
+and used an api to gather the tweets I was interested in. I parsed them by using the .text function.
+This was actually my big design change, because initially I tried to manually parse the 'Text=' from the
+original list. Sentiment analysis is a pre-made package, and I just ran it through every individual tweet, and averaged
+that data to get my final result.
+
+3) Results
+
+Given the simple nature of this program, there isn't much to show for result.
+Here is the output of my program:
+Average Sentiment of 200 Chef Gordon Ramsay's Tweets:  0.181
+This means that his sentiment averages at a little more positive than neutral. This makes sense,
+because although he has quite a character, his twitter is composed of generally positive news and thoughts.
+Although there are a few sassy remarks, which lower the average sentiment!
+
+4) Reflection
+
+As soon as I figured out how to use item.text to parse the list of tweets I pulled using api.GetUserTimeline,
+my task became a lot less frustrating. This makes what was previously the hardest part of my program very elegant
+and properly functioning. Easy as pie! I did not consider unit testing, I would just print the values I was using
+to make calculations along the way, such as number of tweets and total "compound" sentiment. This project was definitely
+very useful in showing me how simple and how potent it is to pull data from a data source such as Twitter, Reddit, Wikipedia, etc.
+I would have liked to better understand how to navigate the twitter api in order to pursue my inital idea of looking at
+specific word frequency over time. It seems that I spent a lot more time figuring out how to get my data than how to
+process and reflect upon its analysis. 
