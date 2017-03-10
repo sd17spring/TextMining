@@ -80,6 +80,8 @@ def making_graphs_neg():
     plt.show()
     plt.savefig("sentiment_neg.png")
 
+    
+
 #making_graphs_pos()
 #making_graphs_neg()
 #making_graphs_neutral()
