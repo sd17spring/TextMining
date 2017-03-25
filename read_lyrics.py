@@ -1,4 +1,6 @@
 import pronouncing
+from bs4 import BeautifulSoup
+import requests
 
 def analyze_text(myString):
     myString = myString.replace(",", "")
@@ -10,6 +12,7 @@ def analyze_text(myString):
 
     idk = 0
     same = 0
+    rhymes = ''
     usedRhymes = []
     for i in range(1, len(myList)):
         for j in running:
@@ -22,17 +25,15 @@ def analyze_text(myString):
                     if two_rhyme(j, myList[i]) == -1:
                         idk += 1
                         break
-                if rating >= 100:
+                if rating >= 150:
                     same += 1
-                    print(j + ' ' + myList[i])
+                    rhymes += '\n' + str(j + ' ' + myList[i])
 
         running.append(myList[i])
         if len(running) > 15:
             running.pop(0)
-
     print(idk)
-    rate = same / len(myList)
-    return same, len(myList)
+    return same, len(myList), rhymes
 
 
 def two_rhyme(Sinit, Sinit2):
@@ -84,22 +85,24 @@ def rhyme_finder(url):
     html = BeautifulSoup(requests.get(url).text, 'lxml')
     totR = 0
     totW = 0
+    body = ''
     for par in html.find_all('p', 'verse'):  # find the first paragraph
-        print(par.get_text())
-        r, w = analyze_text(par.get_text())
-        print(100 * r/w)
+        body += par.get_text()
+        r, w, rhymes = analyze_text(par.get_text())
+        body += rhymes
+        body += str(100 * r/w)
         totR += r
         totW += w
-    print("Total Rhyme Rate")
-    print(100 * totR/totW)
+    if(totW <= 0):
+        return "Invalid URL", body
+    print(body)
+    return ("Total Rhyme Rate: " + str(100 * totR/totW)), body
     #str(html.find('p'))  # the first paragraph, as a string. Includes embedded <b> etc.
 
 
 if __name__ == '__main__':
-    import pronouncing
     # print(pronouncing.phones_for_word("permit"))
     # print(analyze_text("His palms are sweaty, knees weak, arms are heavy. There's vomit on his sweater already, mom's spaghetti"))
     # print(analyze_text("Sometimes I like to walk in the park especially enjoy the fresh air and birds signing. After I go, I feel good"))
-    from bs4 import BeautifulSoup
-    import requests
-    rhyme_finder('http://www.metrolyrics.com/ive-got-you-under-my-skin-lyrics-frank-sinatra.html')
+
+    rhyme_finder('http://www.metrolyrics.com/ive-got-you-uner-my-skin-lyrics-frank-sinatra.html')

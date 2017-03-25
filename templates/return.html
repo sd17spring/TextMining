@@ -1,0 +1,19 @@
+<!doctype html>
+<title>Hello from Nick</title>
+<script>
+var counter = {{rr}};
+
+</script>
+
+{% if not error %}
+
+    <pre>
+
+    <h1 id=textbody>counter</h1>
+    <p>{{body}}</p>
+
+  </pre>
+
+{% else %}
+     <h1>{{error}}</h1>
+{% endif %}

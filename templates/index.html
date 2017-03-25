@@ -1,0 +1,94 @@
+<!doctype html>
+<title>Hello from Nick</title>
+   <h1>Hello !</h1>
+
+ <div id="demo">
+ <h1>The XMLHttpRequest Object</h1>
+ <button type="button" onclick="loadDoc()">Change Content</button>
+ </div>
+
+ <div id="record">
+ <h1>Record</h1>
+ <button type="button" onclick="initAudio()">recerd thing</button>
+ </div>
+
+ <div id="socket">
+ <h1>serkut</h1>
+ <button type="button" onclick="loadWebsocket()">serket</button>
+ </div>
+
+<script>
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "ajax", true);
+  xhttp.send();
+}
+
+function initAudio(){
+  navigator.getUserMedia({audio: true}, initializeRecorder, errorCallback);
+}
+
+function initializeRecorder(strean){
+   audio_context = new AudioContext;
+   sampleRate = audio_context.sampleRate;
+   var audioInput = audio_context.createMediaStreamSource(stream);
+
+   console.log("Created media stream.");
+
+   var bufferSize = 4096;
+   // record only 1 channel
+   var recorder = audio_context.createScriptProcessor(bufferSize, 1, 1);
+   // specify the processing function
+   recorder.onaudioprocess = recorderProcess;
+   // connect stream to our recorder
+   audioInput.connect(recorder);
+   // connect our recorder to the previous destination
+   recorder.connect(audio_context.destination);
+}
+
+
+function recorderProcess(e) {
+  if (recording){
+    var left = e.inputBuffer.getChannelData(0);
+    ws.send(convertFloat32ToInt16(left));
+  }
+}
+
+function convertFloat32ToInt16(buffer) {
+  l = buffer.length;
+  buf = new Int16Array(l);
+  while (l--) {
+    buf[l] = Math.min(1, buffer[l])*0x7FFF;
+  }
+  return buf.buffer;
+}
+
+</script>
+
+<script>
+  function loadWebsocket(){
+      var ws = new WebSocket('ws://127.0.0.1:5000/websocket');
+      document.getElementById("demo").innerHTML = "function ran";
+      ws.onopen = function(evt) {
+        document.getElementById("demo").innerHTML = "socket open I think";
+        console.log('Connected to websocket.');
+
+        // First message: send the sample rate
+        ws.send("sample rate:" + sampleRate);
+
+        navigator.getUserMedia({audio: true, video: false}, initializeRecorder, function(e) {
+         console.log('No live audio input: ' + e);
+       });
+      }
+      ws.open();
+      window.onbeforeunload = function() {
+          websocket.onclose = function () {}; // disable onclose handler first
+          websocket.close()
+      };
+  }
+</script>
