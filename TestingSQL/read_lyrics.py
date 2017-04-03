@@ -116,7 +116,7 @@ def drawOut(url):
     html = BeautifulSoup(requests.get(url).text, 'lxml')
     myList = []
     for par in html.find_all('p', 'verse'):  # find the first paragraph
-        myString = par.get_text().replace(",", "").replace(".", "").replace("?", "").replace("\n", " ")
+        myString = par.get_text().replace(",", "").replace(".", "").replace("?", "").replace("\n", " NEWLINE ")
         myList += myString.split(" ")
         myList += ["BREAKBREAK"]
     if(len(myList) <= 0):

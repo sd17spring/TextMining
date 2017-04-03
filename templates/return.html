@@ -1,18 +1,23 @@
 <!doctype html>
 <title>Hello from Nick</title>
 <script>
-var counter = {{rr}};
-
+$(document).ready(function(){
+    $.post("/nextWord")
+});
 </script>
-
 {% if not error %}
-
+  <h1>
+    Lets see if this
+    <span style="background-color: #0000FF">test</span>
+    is weird
+  </h1>
     <pre>
 
-    <h1 id=textbody>counter</h1>
+    <h1 id=textbody>{{rr}}</h1>
     <p>{{body}}</p>
 
   </pre>
+  <h1 id=textbody>{{rr}}</h1>
 
 {% else %}
      <h1>{{error}}</h1>
