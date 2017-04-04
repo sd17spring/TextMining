@@ -1,0 +1,21 @@
+Chris Aring
+
+Part 3)
+
+
+I used Project Gutenburg and decided to analyze two books by James Baldwin.
+I chose to use sentiment analysis on the text to see if the books were mostly positive, negative, or neutral. I also wanted to see if two books from the same author could be different in terms of analysis. I hoped to learn how to scrape data from the web which I did not know how to do before. I also wanted to learn about rating books as a whole on how positive their text is. I want to learn more but because I missed quite a few assignments from being sick, I am going to do more on this topic in the future on my own to learn more.
+
+
+
+After analysing the text of two books by James Baldwin, I found that not only are both of the books
+mostly neutral, they are very similar. The first book, A Story of the Golden Age had a positive value of .148 and the second book, Hero Tales had a positive value of .146. These two books had positive ratings that were within .002 of eachother which was suprising. 
+
+Book 1: {'compound': 1.0, 'neu': 0.774, 'neg': 0.078, 'pos': 0.148}
+Book 2: {'compound': 1.0, 'neu': 0.766, 'neg': 0.088, 'pos': 0.146}
+
+The books had almost exactly the same positive value and the negative and neutral values were within .010 of eachother. I found it interesting that the books had almost the same values and I was not expecting that.
+
+
+
+Getting the text from the website went well and so did the analysis. It took me a little while to figure out the best method to split the text into individual words. In the end it did not matter because I ended up doing analysis that did not require the words to be separated but I was still happy I figured it out. I could have gone more in depth and I plan to in the future on my own. Since I missed so many assignments from being sick I just decided to learn the basics of text grabbing and analysis for the time being. I enjoyed this topic and I will deffinetly do more text analysis in the future as it is a topic that intrests me. I want to make a physical representation of the analysis of all of the books by the same author to see how similar or contrasting they all are.
