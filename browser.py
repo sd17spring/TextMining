@@ -3,6 +3,7 @@ from flask import render_template
 from flask import request
 import read_lyrics
 import insertUrl
+import os
 app = Flask(__name__)
 # ws = GeventWebSocket(app)
 listColors = ["#00FFFF", "#7FFF00", "#FF8C00","#FF1493", "#FFD700", "#CD5C5C","#FF00FF", "#FFFF00","#00FF7F", "#1E90FF"]
