@@ -21,31 +21,19 @@ p {
 <script>
 $(document).ready(function(){
 
-    $.post("/getLength",
+    $.post("/getAllWords",
     {
         url: '{{url}}'
     },
     function(data){
-      var count = data;
-      for (var i = 0; i < Number(count); i ++){
-        $.post("/getNextWord",
-        {
-            url: '{{url}}',
-            index: i
-        },
-        function(data){
-            $("body").append(data);
-        });
-      }
-      $.post("/setVisited",
-      {
-          url: '{{url}}'
-      },
-      function(data){
-      });
+        $("body").append(data);
     });
-
-
+    $.post("/setVisited",
+    {
+        url: '{{url}}'
+    },
+    function(data){
+    });
 });
 
 </script>

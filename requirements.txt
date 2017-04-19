@@ -1,0 +1,6 @@
+Flask
+pronouncing
+bs4
+requests
+re
+sqlite3

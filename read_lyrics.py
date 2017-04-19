@@ -19,10 +19,11 @@ def analyze_text(myString):
         nsame, nidk = analyze_Word(myList,running,i,usedRhymes,rhymes)
         same += nsame
         idk += nidk
-    print(idk)
+    # print(idk)
     return same, len(myList), rhymes
 
 def analyze_Word(myList, running,i,usedRhymes, rhymes):
+    '''used Rhymes and reducing words'''
     same = 0
     idk = 0
     for j in running:
@@ -66,6 +67,15 @@ def two_rhyme(Sinit, Sinit2):
         s2 = convert_phon(St2[0])
         return find_sim(s1, s2)
 
+def knownWord(word):
+    word = word.lower()
+    word = pronouncing.phones_for_word(word)
+
+    if len(word) == 0:
+        #print(Sinit)
+        return False
+    return True
+
 
 def find_sim(s1, s2):
     score = 0
@@ -104,29 +114,32 @@ def rhyme_finder(url):
         totW += w
     if(totW <= 0):
         return "Invalid URL", body
-    print(body)
+    # print(body)
     for div in html.find_all('div', 'lyrics'):
         myDiv = div.h1.get_text()
     myDiv = re.sub('[^0-9a-zA-Z]+', '', myDiv)
-    print(myDiv)
+    # print(myDiv)
     return ("Total Rhyme Rate: " + str(100 * totR/totW)), body
     #str(html.find('p'))  # the first paragraph, as a string. Includes embedded <b> etc.
 
-def drawOut(url):
+def drawOutWords(url):
     html = BeautifulSoup(requests.get(url).text, 'lxml')
     myList = []
     for par in html.find_all('p', 'verse'):  # find the first paragraph
-        myString = par.get_text().replace(",", "").replace(".", "").replace("?", "").replace("\n", " ")
+        myString = par.get_text().replace(",", "").replace(".", "").replace("?", "").replace("\n", " NEWLINE ")
         myList += myString.split(" ")
         myList += ["BREAKBREAK"]
     if(len(myList) <= 0):
-        return "Invalid URL", "Invalid URL"
+        return "Invalid URL"
+    print(myList)
+    return myList
+
+def drawOutTitle(url):
+    html = BeautifulSoup(requests.get(url).text, 'lxml')
     for div in html.find_all('div', 'lyrics'):
         myDiv = div.h1.get_text()
     myDiv = re.sub('[^0-9a-zA-Z]+', '', myDiv)
-    print(myDiv)
-    print(myList)
-    return myDiv, myList
+    return myDiv
 
 
 if __name__ == '__main__':
@@ -135,4 +148,3 @@ if __name__ == '__main__':
     # print(analyze_text("Sometimes I like to walk in the park especially enjoy the fresh air and birds signing. After I go, I feel good"))
 
     print(rhyme_finder('http://www.metrolyrics.com/ive-got-you-under-my-skin-lyrics-frank-sinatra.html'))
-    drawOut('http://www.metrolyrics.com/ive-got-you-under-my-skin-lyrics-frank-sinatra.html')
