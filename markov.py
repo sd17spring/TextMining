@@ -8,68 +8,21 @@ from numpy.random import choice
 """
 Function that pulls text from web
 """
-
-def words_from_internet(link=http://www.olin.edu/academic-life/student-affairs-resources/student-life/honor-code/, \
-                        start=The Olin Honor Code Values, stop=Quick Links):
-    html = BeautifulSoup(requests.get('link/').text, 'lxml')
-    startpoint = html.get_text().find('start')
-    stoppoint = html.get_text().find('stop')
+megalist = []
+markovdict = {}
+def words_from_internet(link='http://www.olin.edu/academic-life/student-affairs-resources/student-life/honor-code/', start='The Olin Honor Code Values', stop='Quick Links'):
+    html = BeautifulSoup(requests.get(link).text, 'lxml')
+    startpoint = html.get_text().find(start)
+    stoppoint = html.get_text().find(stop)
 
     honor = html.get_text()[startpoint:stoppoint]
     listhonor = str(honor).split()
 
-# """
-# Importing honor code
-# """
-# html = BeautifulSoup(requests.get('http://www.olin.edu/academic-life/student-affairs-resources/student-life/honor-code/').text, 'lxml')
-# startpoint = html.get_text().find('The Olin Honor Code Values')
-# stoppoint = html.get_text().find('Quick Links')
-#
-# honor = html.get_text()[startpoint:stoppoint]
-# listhonor = str(honor).split()
-
-#print(listhonor)
-#
-# """
-# Importing felonies
-# """
-# html = BeautifulSoup(requests.get('https://en.wikipedia.org/wiki/Felony').text, 'lxml')
-# startpoint = html.get_text().find('Broadly, felonies')
-# stoppoint = html.get_text().find('are the least serious')
-#
-# felonies = html.get_text()[startpoint:stoppoint]
-# listfelonies = str(felonies).split()
-#
-# #print(felonies.replace('[',' ').replace(']', ' '))
-#
-# """
-# Import Olin Promotional Text
-# """
-#
-# html = BeautifulSoup(requests.get('http://www.olin.edu').text, 'lxml')
-# startpoint = html.get_text().find('At Olin')
-# stoppoint = html.get_text().find('institutions.')
-#
-# promotion = html.get_text()[startpoint:stoppoint]
-# listpromotion = str(promotion).split()
-#
-# #print(listpromotion)
+    # Combing all text into listhonor
+    megalist.extend(listhonor)
 
 """
-Combing felonies and honor into listhonor
-"""
-
-megalist = []
-megalist.extend(listhonor)
-megalist.extend(listfelonies)
-megalist.extend(listpromotion)
-#print(megalist)
-
-#Finding word frequency
-counts = Counter(megalist)
-#print(counts)
-
-"""Make dictionary
+Make dictionary
 """
 def markov(megalist):
 
@@ -93,22 +46,19 @@ def smushit(markovdict, megalist):
     while not word.endswith("."):
         word = choice(markovdict[word])
         finallist.append(word)
-#        words = []
-#        for k, v in next_word.items():
-#            words.append(k)
-    #         probs.append(v)
-    #
-    #     nxt = choice(words, p=probs)
-    # finallist.append(nxt)
     return " ".join(finallist)
 
 def main_important_part():
-    take in different texts --> call words from internet
-    combine them
-    markov chain
-    output sentence
+    words_from_internet(link='http://www.olin.edu/academic-life/student-affairs-resources/student-life/honor-code/', start='The Olin Honor Code Values', stop='Quick Links')
+    words_from_internet(link='https://en.wikipedia.org/wiki/Felony', start='Broadly, felonies', stop='are the least serious')
+    words_from_internet(link='http://www.olin.edu', start='At Olin', stop='institutions.')
+    markov(megalist)
+    smushit(markovdict, megalist)
+    # markov chain
+    # output sentence
 
 if __name__ == "__main__":
-    x = markov(megalist)
+    # x = markov(megalist)
     # print(x)
-    print(smushit(x, megalist))
+    # print(smushit(x, megalist))
+    main_important_part()
