@@ -54,11 +54,6 @@ def main_important_part():
     words_from_internet(link='http://www.olin.edu', start='At Olin', stop='institutions.')
     markov(megalist)
     smushit(markovdict, megalist)
-    # markov chain
-    # output sentence
 
 if __name__ == "__main__":
-    # x = markov(megalist)
-    # print(x)
-    # print(smushit(x, megalist))
     main_important_part()
