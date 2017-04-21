@@ -1,6 +1,4 @@
-Flask
-pronouncing
-bs4
-requests
-re
-sqlite3
+Flask==0.12
+pronouncing==0.1.5
+beautifulsoup4 
+requests==2.13.0
