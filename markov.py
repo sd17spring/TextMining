@@ -17,7 +17,7 @@ def words_from_internet(link='http://www.olin.edu/academic-life/student-affairs-
     listhonor = str(honor).split()
 
     # Combing all text into listhonor
-    megalist.extend(listhonor)
+    return megalist.extend(listhonor)
 
 
 """
@@ -43,7 +43,8 @@ def smushit(markovdict, megalist):
     capitals = filter(lambda x: x.lower() != x, megalist)
     word = choice(list(capitals))
     finallist.append(word)
-    print(markovdict[word])
+    print(word)
+    # print(markovdict[word])
     # while not word.endswith("."):
     #     word = choice(markovdict[word])
     #     print('foo')
