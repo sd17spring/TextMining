@@ -18,21 +18,29 @@ class Text:
     def cleanText(self):
         inputFile = open(self.fileName, 'rb')
         text = pickle.load(inputFile)
-        # find the start/end of the text and remove the header and footer
+
+        punctuation = [',', ';', '.', '-', '--', '!', '?', ')', '(', "'", '@', '*']
+        for mark in punctuation:
+            text = text.replace(mark, ' ')
+
+        # Remove the header
         start = text.find('START OF THIS PROJECT GUTENBERG')
         if start == -1:
-            start = text.find('*END*THE SMALL PRINT') + 150  # end of the header text
+            start = text.find('END THE SMALL PRINT') + 150  # appox end of the header text
+
+        # Remove the footer
         end = text.find('END OF THIS PROJECT GUTENBERG')
         if end == -1:
             end = text.find('Ende dieses')  # ending statement in German
+
+        # Cut text
         text = text[start:end]
+
         # remove unwanted punctuation
-        punctuation = [',', '.', '-', '--', '!', '?', ')', '(', "'"]
-        for mark in punctuation:
-            text = text.replace(mark, ' ')
+
         return text
 
-    def longest_words(self):
+    def longestWords(self):
         text = self.cleanText()
         text = text.split()
         words = []
@@ -45,14 +53,4 @@ class Text:
 
 
 if __name__ == '__main__':
-    # testing
-    a = Text('Die Geschwister', 'Johann Wolfgang von Goethe', 'geschwister.txt')
-    b = Text('Götz von Berlichingen', 'Johann Wolfgang von Goethe', 'berlichingen.txt')
-    c = Text('Iphigenie auf Tauris', 'Johann Wolfgang von Goethe', 'iphigenie.txt')
-    d = Text('Reineke Fuchs', 'Johann Wolfgang von Goethe', 'reinekefuchs.txt')
-    e = Text('Die Leiden des jungen Werthers 1', 'Johann Wolfgang von Goethe', 'werther1.txt')
-    f = Text('Die Leiden des jungen Werthers 2', 'Johann Wolfgang von Goethe', 'werther2.txt')
-
-    yay = [a, b, c, d, e, f]
-    for i in yay:
-        print(i.longest_words())
+    pass

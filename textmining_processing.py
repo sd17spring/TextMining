@@ -1,19 +1,33 @@
-import pickle
 from classText import Text
+
 """
 Finding  the longest word
 """
 
-def final_analysis(text):
-    clean = clean_text(text)
-    top = longest_words(clean)
-    for pair in top:
-        print(pair)
+geschwister = Text('Die Geschwister', 'Johann Wolfgang von Goethe', 'geschwister.txt')
+berlichingen = Text('Götz von Berlichingen', 'Johann Wolfgang von Goethe', 'berlichingen.txt')
+iphigenie = Text('Iphigenie auf Tauris', 'Johann Wolfgang von Goethe', 'iphigenie.txt')
+reinekefuchs = Text('Reineke Fuchs', 'Johann Wolfgang von Goethe', 'reinekefuchs.txt')
+werther1 = Text('Die Leiden des jungen Werthers 1', 'Johann Wolfgang von Goethe', 'werther1.txt')
+werther2 = Text('Die Leiden des jungen Werthers 2', 'Johann Wolfgang von Goethe', 'werther2.txt')
+
+works = [geschwister, berlichingen, iphigenie, reinekefuchs, werther1, werther2]
 
 
-# final_analysis('berlichingen.txt')
-final_analysis('geschwister.txt')
-# final_analysis('iphigenie.txt')
-# final_analysis('reinekefuchs.txt')
-# final_analysis('werther1.txt')
-# final_analysis('werther2.txt')
+def analyze(text):
+    text.cleanText()
+    wordsAndLengths = text.longestWords()
+    wordsOnly = [word[1] for word in wordsAndLengths]
+    return wordsOnly
+
+
+def analyzeAll(works):
+    result = [analyze(work) for work in works]
+    return result
+
+
+final = analyzeAll(works)
+
+for work in final:
+    for word in work:
+        print(word)
