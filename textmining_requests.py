@@ -30,8 +30,3 @@ werther2 = requests.get('http://www.gutenberg.org/cache/epub/2408/pg2408.txt').t
 f = open('werther2.txt', 'wb')
 pickle.dump(werther2, f)
 f.close()
-
-wahlverwandtschaften = requests.get('http://www.gutenberg.org/cache/epub/2403/pg2403.txt').text
-f = open('wahlverwandtschaften.txt', 'wb')
-pickle.dump(wahlverwandtschaften, f)
-f.close()
