@@ -16,3 +16,12 @@ They will print in the terminal.
 This project was originally written in Week 6 of Software Design, and I
 reworked it in Week 13.  It is now written in an object-oriented style and
 has some updated text mining processes.
+
+## Some long words
+- freundschaftliche - friendly
+- Allerdurchlauchtigster - most gracious/serene
+- unwahrscheinlichem - unlikely
+- zusammenschrumpfte - shriveled up
+- Freundschaftsbezeigungen - demonstrations of friendship
+- durcheinandergeschüttelt - agitated
+- Amtschreiberstochter - office clerk's daughter
