@@ -2,7 +2,7 @@
 Sarah Barden
 This script is the final processing for my text mining project.  It initializes
 seven different works by Goethe as Text objects (see classText.py) and finds
-the top three longest words in each.
+the three longest words in each.
 """
 
 from classText import Text
@@ -24,7 +24,6 @@ def analyze(text):
     and outputs a list of words and their lengths.
     """
     wordsAndLengths = text.longestWords(3)
-    print("analyzed", wordsAndLengths)
     wordsOnly = [word[1] for word in wordsAndLengths]
     return wordsOnly
 
