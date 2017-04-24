@@ -43,7 +43,6 @@ class Text:
             end = text.find('Ende dieses')  # ending statement in German
 
         text = text[start:end]  # Cut the text to remove footer/header
-        print("finished cleaning")
         return text
 
     def longestWords(self, number):
@@ -56,7 +55,6 @@ class Text:
         text = self.cleanText()
         text = text.split()
         words = []
-        print("starting analysis")
         # After splitting the whole text into a list of words, this sorts them
         # all by the length into a list, from longest to shortest.
         for word in text:
