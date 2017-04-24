@@ -1,3 +1,7 @@
+"""
+Sarah Barden
+Requests project gutenberg pages.  There are six requests for Goethe's works.
+"""
 import pickle
 import requests
 
