@@ -1,10 +1,9 @@
-'''Mini Project 3: Text Mining
+'''Mini Project 5: Revisiting Text Mining
 Software Design Spring 2017
 Gracey Wilson
 
-This script parses the text of Romeo and Juliet,
-counts how often each character speaks, and returns
-the percentage of lines spoken by male and female characters.'''
+This script parses the text of Romeo and Juliet, counts how often each character speaks,
+and returns the percentage of lines spoken by male vs female characters.'''
 
 import string
 import pickle
@@ -95,9 +94,6 @@ def parse_text_for_mentions(char_dict, text_file_name):
         number_of_mentions = parse(key, text_file_name)
         mentions[key] = number_of_mentions
     return mentions
-
-
-# print(name_number)         # unit test; returns dictionary with character names as keys and # of times mentioned as value
 
 
 def percent_breakdown(name_number,char_dict):
