@@ -13,6 +13,10 @@ def data_finder(user_handle):
         print ('access_token_secret:')
         a_t_s = input()
         #data fider uses these to login
+        c_k='9x533EajbtyDTjtwAsxYHc1tZ'
+        c_s='Fq13eEj8HF6xSHWUrrq8XvOshiOG0M1g7ibVpwpEgAH1UqPKQR'
+        a_t_k='834076435421786112-SFdne8UH0j5vVKrJWdNzjyMuBeCIQAA'
+        a_t_s='giFPH6ahXIKQJmWIOZmZRPwD1KOmqHpTUDfb3foD72Xw8'
 
         api = twitter.Api(consumer_key=c_k,
                           consumer_secret=c_s,
@@ -35,13 +39,14 @@ def data_finder(user_handle):
 
     statuses = api.GetUserTimeline(screen_name=user_handle, count=2)
     statuses = [s.text for s in statuses]
-    #print (statuses)
+    print (statuses)
     words = []
     for status in statuses:
         tweet = [status.split()]
         words = words +  tweet
     statuses = words
-    #print (statuses)
+    return statuses
+
 
 
 
