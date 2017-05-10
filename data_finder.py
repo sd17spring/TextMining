@@ -37,9 +37,9 @@ def data_finder(user_handle):
     # How do i save that list so i can open it in another progam
 
 
-    statuses = api.GetUserTimeline(screen_name=user_handle, count=2)
+    statuses = api.GetUserTimeline(screen_name=user_handle, count=850)
     statuses = [s.text for s in statuses]
-    print (statuses)
+    #print (statuses)
     words = []
     for status in statuses:
         tweet = [status.split()]
