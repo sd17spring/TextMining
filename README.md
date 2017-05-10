@@ -1,3 +1,13 @@
+Update 5/9/17
+ to run
+ >> python3 Auto_tweeter.py
+
+and then follow directions
+
+
+
+
+
 # TextMining
 
 This is the base repo for the text mining and analysis project for Software Design at Olin College.
