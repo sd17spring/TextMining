@@ -1,1 +1,1 @@
-web: python3 browser.py
+web: python3 flask_app.py
