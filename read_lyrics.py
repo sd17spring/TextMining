@@ -115,7 +115,7 @@ def rhyme_finder(url):
     if(totW <= 0):
         return "Invalid URL", body
     # print(body)
-    for div in html.find_all('div', 'lyrics'):
+    for div in html.find_all('div', 'banner-heading'):
         myDiv = div.h1.get_text()
     myDiv = re.sub('[^0-9a-zA-Z]+', '', myDiv)
     # print(myDiv)
@@ -136,7 +136,7 @@ def drawOutWords(url):
 
 def drawOutTitle(url):
     html = BeautifulSoup(requests.get(url).text, 'lxml')
-    for div in html.find_all('div', 'lyrics'):
+    for div in html.find_all('div', 'banner-heading'):
         myDiv = div.h1.get_text()
     myDiv = re.sub('[^0-9a-zA-Z]+', '', myDiv)
     return myDiv
