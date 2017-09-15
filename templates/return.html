@@ -1,0 +1,32 @@
+<!doctype html>
+<title>Hello from Nick</title>
+{% if not error %}
+     <h1>Hello {{name}}!</h1>
+     <h1>Age: {{age}}</h1>
+     <h1>Favorite SoftDes Ninja: Patrick Hutson</h1>
+{% else %}
+     <h1>{{error}}</h1>
+{% endif %}
+
+<body>
+
+<div id="demo">
+<h1>Look how dynamic this page is!</h1>
+<button type="button" onclick="loadDoc()">Click This</button>
+</div>
+
+<script>
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "ajax", true);
+  xhttp.send();
+}
+
+</script>
+
+</body>
