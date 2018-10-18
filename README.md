@@ -1,5 +1,4 @@
-# Mini Project 4: Text Mining
-## Software Design Spring 2017
+# Romeo & Juliet Text Mining
 ### Gracey Wilson
 
 ### Project Overview
